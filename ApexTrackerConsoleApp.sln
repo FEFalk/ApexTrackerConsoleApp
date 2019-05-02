@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.202
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApexTrackerConsoleApp", "ApexTrackerConsoleApp\ApexTrackerConsoleApp.csproj", "{53DABE15-917E-478A-ABD0-D657CDF4DF42}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{53DABE15-917E-478A-ABD0-D657CDF4DF42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53DABE15-917E-478A-ABD0-D657CDF4DF42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53DABE15-917E-478A-ABD0-D657CDF4DF42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53DABE15-917E-478A-ABD0-D657CDF4DF42}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CD23DBF8-7098-4E88-8720-A4E51043C3A9}
+	EndGlobalSection
+EndGlobal
