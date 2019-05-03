@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ApexTrackerConsoleApp.Models
 {
-    public class GameSessionData
+    public class GameSessionDataModel
     {
         [Required]
         public string PlayerId { get; set; }
@@ -19,7 +19,7 @@ namespace ApexTrackerConsoleApp.Models
         public PlayerDto Player { get; set; }
 
         [Required]
-        public GameSession GameSession { get; set; }
+        public GameSessionModel GameSessionModel { get; set; }
 
         public int Kills { get; set; }
 

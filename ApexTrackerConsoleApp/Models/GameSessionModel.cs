@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ApexTrackerConsoleApp.Models
 {
-    public class GameSession
+    public class GameSessionModel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
