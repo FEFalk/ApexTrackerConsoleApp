@@ -117,13 +117,14 @@ namespace ApexTrackerConsoleApp
             }
             return Items;
         }
-        public List<Item> ReadGameSessionFromDb(string command)
+        public List<Item> ReadGameSessionFromDb(string command, int gameSessionId)
         {
             try
             {
                 //TODO: if open dont open               
                 conn.Open();
                 var sqlcommand = new SqlCommand(command, conn);
+                sqlcommand.Parameters.AddWithValue("gamesessionid", Int32.Parse(gameSessionId.ToString()));
                 var reader = sqlcommand.ExecuteReader();
                 Items = new List<Item>();
                 while (reader.Read())
@@ -148,6 +149,41 @@ namespace ApexTrackerConsoleApp
                 conn.Close();
             }
             return Items;
+        }
+        public int ReadActiveSessionFromDb(string command)
+        {
+            try
+            {
+                //TODO: if open dont open               
+                conn.Open();
+                var sqlcommand = new SqlCommand(command, conn);
+                var reader = sqlcommand.ExecuteReader();
+                Items = new List<Item>();
+                while (reader.Read())
+                {                    
+                    Items.Add(new Item
+                    {
+                        GameSessionId = Int32.Parse(reader[0].ToString()),
+                        StartTime = DateTime.Parse(reader[1].ToString()),
+                        EndTime = DateTime.Parse(reader[2].ToString()),
+                        MaxPlayers = Int32.Parse(reader[3].ToString()),
+                    });
+                }
+                reader.Dispose();
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
+            if (Items[0].GameSessionId != 0)
+                return Items[0].GameSessionId;
+            else
+                return 0;
         }
     }
 }

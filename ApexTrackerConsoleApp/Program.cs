@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System.Threading;
 
 namespace ApexTrackerConsoleApp
 {
@@ -15,17 +16,23 @@ namespace ApexTrackerConsoleApp
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
-            /*Fetch gamesession*/
-            GameSession gameSession = new GameSession();
-            GameSessionModel gameSessionModel = new GameSessionModel();
-            GetPlayerData getPlayerData = new GetPlayerData();
 
-            gameSessionModel = gameSession.GetGameSession();
+            GameSession gameSession = new GameSession();
+            GameSessionModel gameSessionModel;
+            GetPlayerData getPlayerData = new GetPlayerData();
+            int gameSessionId = 0;
+
+            while (gameSessionId == 0)
+            {
+                gameSessionId = gameSession.GetGameSessionID();
+                Thread.Sleep(1000);
+            }
+            gameSessionModel = gameSession.GetGameSession(gameSessionId);
+
             getPlayerData.BuildPlayerList(gameSessionModel);
             getPlayerData.GetPlayerOffsets(gameSessionModel);
             getPlayerData.BuildPlayerList(gameSessionModel);
-            getPlayerData.Run(gameSessionModel);
-            
+            getPlayerData.Run(gameSessionModel);            
         }
     }
 }
