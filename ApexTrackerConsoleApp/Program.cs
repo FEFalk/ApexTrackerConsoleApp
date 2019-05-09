@@ -21,18 +21,34 @@ namespace ApexTrackerConsoleApp
             GameSessionModel gameSessionModel;
             GetPlayerData getPlayerData = new GetPlayerData();
             int gameSessionId = 0;
-
-            while (gameSessionId == 0)
+            while (true)
             {
-                gameSessionId = gameSession.GetGameSessionID();
-                Thread.Sleep(1000);
-            }
-            gameSessionModel = gameSession.GetGameSession(gameSessionId);
+                while (gameSessionId == 0)
+                {
+                    gameSessionId = gameSession.GetGameSessionID();
+                    Thread.Sleep(1000);
+                }
+                Console.WriteLine("gamesession: " + gameSessionId);
+                gameSessionModel = gameSession.GetGameSession(gameSessionId);
+                if (gameSession.PlayersExist(gameSessionModel) == null)
+                {
+                    Console.WriteLine("Cancling gamesession.");
+                    gameSession.CancelGameSession(gameSessionModel);
+                    gameSessionId = 0;
+                    continue;
+                }
 
-            getPlayerData.BuildPlayerList(gameSessionModel);
-            getPlayerData.GetPlayerOffsets(gameSessionModel);
-            getPlayerData.BuildPlayerList(gameSessionModel);
-            getPlayerData.Run(gameSessionModel);            
+                getPlayerData.BuildPlayerList(gameSessionModel);
+                getPlayerData.SetPlayerOffsets();
+                getPlayerData.BuildPlayerList(gameSessionModel);
+
+                while (gameSessionModel.EndTime >= DateTime.Now)
+                {
+                    if (gameSessionModel.StartTime <= DateTime.Now)
+                        getPlayerData.Run();
+                }
+                gameSessionId = 0;
+            }
         }
     }
 }

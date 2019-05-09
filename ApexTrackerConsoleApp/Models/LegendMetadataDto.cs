@@ -2,7 +2,7 @@
 
 namespace ApexTrackerConsoleApp.Models
 {
-    public class LegendMetadata
+    public class LegendMetadataDto
     {
         [JsonProperty("legend_name")]
         public string LegendName { get; set; }

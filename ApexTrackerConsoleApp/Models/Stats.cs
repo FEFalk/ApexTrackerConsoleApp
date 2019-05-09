@@ -25,6 +25,6 @@ namespace ApexTrackerConsoleApp.Models
         /// The data returned from the operation.
         /// </summary>
         [JsonProperty("metadata")]
-        public Metadata Metadata { get; set; }
+        public MetadataDto MetadataDto { get; set; }
     }
 }

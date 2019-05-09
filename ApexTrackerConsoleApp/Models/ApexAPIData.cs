@@ -24,13 +24,13 @@ namespace ApexTrackerConsoleApp.Models
         /// The data returned from the operation.
         /// </summary>
         [JsonProperty("children")]
-        public List<Legends> Legends { get; set; }
+        public List<LegendsDto> LegendsDto { get; set; }
 
         /// <summary>
         /// The data returned from the operation.
         /// </summary>
         [JsonProperty("metadata")]
-        public ChildrenMetadata Metadata { get; set; }
+        public ChildrenMetadataDto MetadataDto { get; set; }
 
 
         /// <summary>

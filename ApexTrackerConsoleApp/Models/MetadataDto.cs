@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ApexTrackerConsoleApp.Models
 {
-    public class Metadata
+    public class MetadataDto
     {
         /// <summary>
         /// The data returned from the operation.

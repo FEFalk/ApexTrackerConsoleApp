@@ -16,6 +16,9 @@ namespace ApexTrackerConsoleApp.Models
         public int GameSessionId { get; set; }
 
         [Required]
+        public int LegendId { get; set; }
+
+        [Required]
         public PlayerDto Player { get; set; }
 
         [Required]

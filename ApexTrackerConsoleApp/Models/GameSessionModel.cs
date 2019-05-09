@@ -22,5 +22,7 @@ namespace ApexTrackerConsoleApp.Models
         [Required]
         public int MaxPlayers { get; set; }
 
+        public bool Canceled { get; set; }
+
     }
 }

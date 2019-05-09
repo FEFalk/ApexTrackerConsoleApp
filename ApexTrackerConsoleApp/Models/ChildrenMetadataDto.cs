@@ -2,7 +2,7 @@
 
 namespace ApexTrackerConsoleApp.Models
 {
-    public class ChildrenMetadata
+    public class ChildrenMetadataDto
     {
         [JsonProperty("platformId")]
         public int PlatformId { get; set; }
