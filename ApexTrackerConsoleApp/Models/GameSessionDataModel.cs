@@ -15,7 +15,6 @@ namespace ApexTrackerConsoleApp.Models
         [Required]
         public int GameSessionId { get; set; }
 
-        [Required]
         public int LegendId { get; set; }
 
         [Required]
@@ -35,5 +34,10 @@ namespace ApexTrackerConsoleApp.Models
         public int OffsetTop3 { get; set; }
 
         public int OffsetWins { get; set; }
+
+        public bool HasTop3Tracker { get; set; }
+
+        public bool HasWinTracker { get; set; }
+
     }
 }

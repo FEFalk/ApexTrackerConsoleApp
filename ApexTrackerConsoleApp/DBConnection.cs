@@ -26,6 +26,8 @@ namespace ApexTrackerConsoleApp
         public int OffsetKills { get; set; }
         public int OffsetTop3 { get; set; }
         public int OffsetWins { get; set; }
+        public bool HasTop3Tracker { get; set; }
+        public bool HasWinTracker { get; set; }
     }
     class DbConnection
     {
@@ -130,6 +132,8 @@ namespace ApexTrackerConsoleApp
                         OffsetKills = Int32.Parse(reader[7].ToString()),
                         OffsetTop3 = Int32.Parse(reader[8].ToString()),
                         OffsetWins = Int32.Parse(reader[9].ToString()),
+                        HasTop3Tracker = Boolean.Parse(reader[10].ToString()),
+                        HasWinTracker = Boolean.Parse(reader[11].ToString())
                     });
                 }
                 reader.Dispose();

@@ -92,6 +92,8 @@ namespace ApexTrackerConsoleApp
                 gameSessionData.OffsetKills = item.OffsetKills;
                 gameSessionData.OffsetTop3 = item.OffsetTop3;
                 gameSessionData.OffsetWins = item.OffsetWins;
+                gameSessionData.HasTop3Tracker = item.HasTop3Tracker;
+                gameSessionData.HasWinTracker = item.HasTop3Tracker;
                 gameSessionDataList.Add(gameSessionData);
             }
         }

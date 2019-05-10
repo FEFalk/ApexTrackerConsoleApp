@@ -52,7 +52,7 @@ namespace ApexTrackerConsoleApp
         {
             dbConnection.ConnectToDb(connection);
             dbConnection.Items = new List<Item>();
-            string sqlcommand = "SELECT UserName, PlayerId, GameSessionId, LegendId, Kills, Top3, Wins, OffsetKills, OffsetTop3, OffsetWins " +
+            string sqlcommand = "SELECT UserName, PlayerId, GameSessionId, LegendId, Kills, Top3, Wins, OffsetKills, OffsetTop3, OffsetWins, HasTop3Tracker, HasWinTracker " +
                      "FROM [ApexTrackerDb].[dbo].[GameSessionData], dbo.Player " +
                      "where [dbo].[GameSessionData].[GameSessionId] = @gamesessionid " +
                      "and [dbo].[GameSessionData].[PlayerId] = dbo.Player.Id ";
