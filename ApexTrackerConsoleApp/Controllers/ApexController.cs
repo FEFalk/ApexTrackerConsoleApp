@@ -5,16 +5,18 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using ApexTrackerConsoleApp.Models;
+using System.Threading;
 
 namespace ApexTrackerConsoleApp.Controllers
 {
-    public class ApexController
+    public static class ApexController
     {
-        public async Task<PlayerDto> GetApexPlayerAPI(string name, string legendName)
+        public static async Task<PlayerDto> GetApexPlayerAPI(string name, string legendName)
         {
             PlayerDto player = new PlayerDto();
             try
             {
+                
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri("https://public-api.tracker.gg/apex/v1/standard/profile/5/");
@@ -38,8 +40,9 @@ namespace ApexTrackerConsoleApp.Controllers
                             Kills = response.data.LegendsDto.Find(x => x.LegendMetadataDto.LegendName == legendName).Stats.Find(x => x.MetadataDto.Key == "Kills") != null ? response.data.LegendsDto.Find(x => x.LegendMetadataDto.LegendName == legendName).Stats.Find(x => x.MetadataDto.Key == "Kills").Value : 0,
                             Wins = response.data.LegendsDto.Find(x => x.LegendMetadataDto.LegendName == legendName).Stats.Find(x => x.MetadataDto.Key == "SeasonWins") != null ? response.data.LegendsDto.Find(x => x.LegendMetadataDto.LegendName == legendName).Stats.Find(x => x.MetadataDto.Key == "SeasonWins").Value : 0,
                             Top3 = response.data.LegendsDto.Find(x => x.LegendMetadataDto.LegendName == legendName).Stats.Find(x => x.MetadataDto.Key == "TimesPlacedtop3") != null ? response.data.LegendsDto.Find(x => x.LegendMetadataDto.LegendName == legendName).Stats.Find(x => x.MetadataDto.Key == "TimesPlacedtop3").Value : 0
-                        };                       
+                        };
                     }
+                    Thread.Sleep(3000);
                 }
             }
             catch (Exception ex)
@@ -47,7 +50,7 @@ namespace ApexTrackerConsoleApp.Controllers
             }
             return player;
         }
-        public async Task<PlayerDto> GetApexPlayerOffsetsAPI(string name)
+        public static async Task<PlayerDto> GetApexPlayerOffsetsAPI(string name)
         {
             PlayerDto player = new PlayerDto();
             try
@@ -72,11 +75,12 @@ namespace ApexTrackerConsoleApp.Controllers
                             Level = response.data.MetadataDto.Level,
                             Icon = response.data.LegendsDto.FirstOrDefault() != null ? response.data.LegendsDto.FirstOrDefault().LegendMetadataDto.LegendName.ToLower() : "bangalore",
                             BGImage = response.data.LegendsDto.FirstOrDefault() != null ? response.data.LegendsDto.FirstOrDefault().LegendMetadataDto.BackgroundURL.ToString() : "https://trackercdn.com/cdn/apex.tracker.gg/legends/bangalore-concept-bg-small.jpg",
-                            Kills = response.data.LegendsDto[0].Stats.Find(x => x.MetadataDto.Key == "Kills") != null ? response.data.LegendsDto[0].Stats.Find(x => x.MetadataDto.Key == "Kills").Value : 0,
-                            Wins = response.data.LegendsDto[0].Stats.Find(x => x.MetadataDto.Key == "SeasonWins") != null ? response.data.LegendsDto[0].Stats.Find(x => x.MetadataDto.Key == "SeasonWins").Value : 0,
-                            Top3 = response.data.LegendsDto[0].Stats.Find(x => x.MetadataDto.Key == "TimesPlacedtop3") != null ? response.data.LegendsDto[0].Stats.Find(x => x.MetadataDto.Key == "TimesPlacedtop3").Value : 0
+                            Kills = response.data.LegendsDto[0].Stats.Find(x => x.MetadataDto.Key == "Kills") != null ? response.data.LegendsDto[0].Stats.Find(x => x.MetadataDto.Key == "Kills").Value : -1,
+                            Wins = response.data.LegendsDto[0].Stats.Find(x => x.MetadataDto.Key == "SeasonWins") != null ? response.data.LegendsDto[0].Stats.Find(x => x.MetadataDto.Key == "SeasonWins").Value : -1,
+                            Top3 = response.data.LegendsDto[0].Stats.Find(x => x.MetadataDto.Key == "TimesPlacedtop3") != null ? response.data.LegendsDto[0].Stats.Find(x => x.MetadataDto.Key == "TimesPlacedtop3").Value : -1
                         };
                     }
+                    Thread.Sleep(3000);
                 }
             }
             catch (Exception ex)

@@ -18,34 +18,34 @@ namespace ApexTrackerConsoleApp
             Console.WriteLine("Hello World!");
 
             GameSession gameSession = new GameSession();
-            GameSessionModel gameSessionModel;
-            GetPlayerData getPlayerData = new GetPlayerData();
+            GameSessionDto GameSessionDto;
+            Application application = new Application();
             int gameSessionId = 0;
             while (true)
             {
                 while (gameSessionId == 0)
                 {
                     gameSessionId = gameSession.GetGameSessionID();
-                    Thread.Sleep(1000);
                 }
                 Console.WriteLine("gamesession: " + gameSessionId);
-                gameSessionModel = gameSession.GetGameSession(gameSessionId);
-                if (gameSession.PlayersExist(gameSessionModel) == null)
+                GameSessionDto = gameSession.GetGameSession(gameSessionId);
+                if (gameSession.PlayersExist(GameSessionDto) == null)
                 {
                     Console.WriteLine("Cancling gamesession.");
-                    gameSession.CancelGameSession(gameSessionModel);
+                    gameSession.CancelGameSession(GameSessionDto);
                     gameSessionId = 0;
                     continue;
                 }
+            
+                application.BuildPlayerList(GameSessionDto); //hämta playernames från db
+                application.BuildSquadList(GameSessionDto); //skapa squads utan stats
+                application.CalibratePlayerList(); // hämta playerstats från api
+                application.CalibrateSquadList(); //updatera squads med stats tilldela trackers
 
-                getPlayerData.BuildPlayerList(gameSessionModel);
-                getPlayerData.SetPlayerOffsets();
-                getPlayerData.BuildPlayerList(gameSessionModel);
-
-                while (gameSessionModel.EndTime >= DateTime.Now)
+                while (GameSessionDto.EndTime >= DateTime.Now)
                 {
-                    if (gameSessionModel.StartTime <= DateTime.Now)
-                        getPlayerData.Run();
+                    if (GameSessionDto.StartTime <= DateTime.Now)
+                        application.Run();
                 }
                 gameSessionId = 0;
             }

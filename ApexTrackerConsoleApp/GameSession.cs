@@ -10,18 +10,16 @@ namespace ApexTrackerConsoleApp
         DbConnection dbConnection = new DbConnection();
         string connection = @"Server=.\SQLEXPRESS;Database=ApexTrackerDb;Trusted_Connection=True";
 
-        public GameSessionModel gameSession = new GameSessionModel();
-        public GameSessionModel GetGameSession(int gameSessionId)
+        public GameSessionDto gameSession = new GameSessionDto();
+        public GameSessionDto GetGameSession(int gameSessionId)
         {
-            string sqlcommand = "SELECT Id, StartTime, EndTime, MaxPlayers, Canceled " +
-                                "FROM [ApexTrackerDb].[dbo].[GameSession] " +
-                                "where [dbo].[GameSession].[Id] = @gamesessionid " +
-                                "and [dbo].[GameSession].[Canceled] = 0";
-            dbConnection.ConnectToDb(connection);
-            dbConnection.Items = new List<Item>();
-            dbConnection.Items = dbConnection.ReadGameSessionFromDb(sqlcommand, gameSessionId);
 
-            gameSession = new GameSessionModel();
+            dbConnection.ConnectToDb(connection);
+            dbConnection.SetCommandReadGameSessionFromDb();
+            dbConnection.Items = new List<Item>();
+            dbConnection.Items = dbConnection.ReadGameSessionFromDb(gameSessionId);
+
+            gameSession = new GameSessionDto();
             foreach (Item item in dbConnection.Items)
             {
                 gameSession.Id = item.GameSessionId;
@@ -35,33 +33,24 @@ namespace ApexTrackerConsoleApp
         {
             int gameSessionId;
             dbConnection.ConnectToDb(connection);
-            dbConnection.Items = new List<Item>();
-            string sqlcommand = "SELECT Id, StartTime, EndTime, MaxPlayers, Canceled " +
-                    "FROM [ApexTrackerDb].[dbo].[GameSession] " +
-                    "where  GETDATE() >=  DATEADD(MINUTE, -5, [dbo].[GameSession].[StartTime]) " + 
-                    "and GETDATE () <= [dbo].[GameSession].[EndTime] " +
-                    "and [dbo].[GameSession].[Canceled] = 0";
-            gameSessionId = dbConnection.ReadActiveSessionFromDb(sqlcommand);
+            dbConnection.SetCommandReadActiveGameSessionFromDb();
+            gameSessionId = dbConnection.ReadActiveSessionFromDb();
             if (gameSessionId != 0)
                 return gameSessionId;
             else
                 return 0;
         }
 
-        public List<Item> PlayersExist(GameSessionModel gameSession)
+        public List<Item> PlayersExist(GameSessionDto gameSession)
         {
             dbConnection.ConnectToDb(connection);
             dbConnection.Items = new List<Item>();
-            string sqlcommand = "SELECT UserName, PlayerId, GameSessionId, LegendId, Kills, Top3, Wins, OffsetKills, OffsetTop3, OffsetWins, HasTop3Tracker, HasWinTracker " +
-                     "FROM [ApexTrackerDb].[dbo].[GameSessionData], dbo.Player " +
-                     "where [dbo].[GameSessionData].[GameSessionId] = @gamesessionid " +
-                     "and [dbo].[GameSessionData].[PlayerId] = dbo.Player.Id ";
-
-            dbConnection.Items = dbConnection.ReadPlayersFromDb(sqlcommand, gameSession);
+            dbConnection.SetCommandReadPlayersFromDb();
+            dbConnection.Items = dbConnection.ReadPlayersFromDb(gameSession);
             if (dbConnection.Items.Count > 0) return (dbConnection.Items);
             else return null;
         }
-        public void CancelGameSession(GameSessionModel gameSession)
+        public void CancelGameSession(GameSessionDto gameSession)
         {
             dbConnection.ConnectToDb(connection);
             dbConnection.Items = new List<Item>();

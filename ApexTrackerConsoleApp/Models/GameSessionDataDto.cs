@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace ApexTrackerConsoleApp.Models
 {
-    public class GameSessionDataModel
+    public class GameSessionDataDto
     {
         [Required]
         public string PlayerId { get; set; }
+        public int SquadId { get; set; }
 
         [Required]
         public int GameSessionId { get; set; }
@@ -21,7 +22,7 @@ namespace ApexTrackerConsoleApp.Models
         public PlayerDto Player { get; set; }
 
         [Required]
-        public GameSessionModel GameSessionModel { get; set; }
+        public GameSessionDto GameSessionDto { get; set; }
 
         public int Kills { get; set; }
 
@@ -38,6 +39,9 @@ namespace ApexTrackerConsoleApp.Models
         public bool HasTop3Tracker { get; set; }
 
         public bool HasWinTracker { get; set; }
+
+        public bool Active { get; set; }
+
 
     }
 }
