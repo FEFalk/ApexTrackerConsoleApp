@@ -68,16 +68,16 @@ namespace ApexTrackerConsoleApp.Models
 
         }
 
-        public async void SetStatsFromAPI()
+        public void SetStatsFromAPI()
         {
-            var playerAPIResult = await ApexController.GetApexPlayerOffsetsAPI(UserName);
+            var playerAPIResult = ApexController.GetApexPlayerOffsetsAPI(UserName)?.Result;
 
             if (playerAPIResult != null)
             {
-                OffsetKills = (int)playerAPIResult.Kills;
-                OffsetTop3 = (int)playerAPIResult.Top3;
-                OffsetWins = (int)playerAPIResult.Wins;
-                LegendName = playerAPIResult.Icon;
+                this.OffsetKills = (int)playerAPIResult.Kills;
+                this.OffsetTop3 = (int)playerAPIResult.Top3;
+                this.OffsetWins = (int)playerAPIResult.Wins;
+                this.LegendName = playerAPIResult.Icon;
             }
             else
             {

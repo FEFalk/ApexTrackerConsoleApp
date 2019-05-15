@@ -94,7 +94,6 @@ namespace ApexTrackerConsoleApp
                 if (!success)
                 {
                     squadsWithoutTracker.Add(squad);
-                    squadList.Remove(squad);
                 }
             }
         }

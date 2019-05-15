@@ -38,8 +38,8 @@ namespace ApexTrackerConsoleApp
                 }
             
                 application.BuildPlayerList(GameSessionDto); //hämta playernames från db
-                application.BuildSquadList(GameSessionDto); //skapa squads utan stats
                 application.CalibratePlayerList(); // hämta playerstats från api
+                application.BuildSquadList(GameSessionDto); //skapa squads utan stats               
                 application.CalibrateSquadList(); //updatera squads med stats tilldela trackers
 
                 while (GameSessionDto.EndTime >= DateTime.Now)

@@ -115,7 +115,8 @@ namespace ApexTrackerConsoleApp
             command.Append(" OffsetWins = @offsetwins,");
             command.Append(" LegendId = @legendId,");
             command.Append(" HasTop3Tracker = @hastop3tracker,");
-            command.Append(" HasWinTracker = @haswintracker");
+            command.Append(" HasWinTracker = @haswintracker,");
+            command.Append(" Active = @active");
             command.Append(" where [dbo].[GameSessionData].[GameSessionId] = @gamesessionid");
             command.Append(" and [dbo].[GameSessionData].[PlayerId] = @playerid");
         }
@@ -135,6 +136,7 @@ namespace ApexTrackerConsoleApp
                 sqlcommand.Parameters.AddWithValue("@offsetwins", player.OffsetWins);
                 sqlcommand.Parameters.AddWithValue("@legendid", player.LegendId);
                 sqlcommand.Parameters.AddWithValue("@hastop3tracker", player.HasTop3Tracker);
+                sqlcommand.Parameters.AddWithValue("@active", player.Active);
                 sqlcommand.Parameters.AddWithValue("@haswintracker", player.HasWinTracker);
                 sqlcommand.Parameters.AddWithValue("@gamesessionid", player.GameSessionId);
                 sqlcommand.Parameters.AddWithValue("@playerid", player.PlayerId);
@@ -186,7 +188,7 @@ namespace ApexTrackerConsoleApp
                         OffsetWins = Int32.Parse(reader[10].ToString()),
                         HasTop3Tracker = Boolean.Parse(reader[11].ToString()),
                         HasWinTracker = Boolean.Parse(reader[12].ToString()),
-                        Active = Boolean.Parse(reader[12].ToString())
+                        Active = Boolean.Parse(reader[13].ToString())
                     });
                 }
                 reader.Dispose();

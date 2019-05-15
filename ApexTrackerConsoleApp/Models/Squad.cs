@@ -16,6 +16,7 @@ namespace ApexTrackerConsoleApp.Models
         public bool HasTop3Tracker { get; set; }
         public bool HasWinTracker { get; set; }
 
+        string connection = @"Server=.\SQLEXPRESS;Database=ApexTrackerDb;Trusted_Connection=True";
         public Squad(string name, int id)
         {
             this.Id = id;
@@ -27,15 +28,30 @@ namespace ApexTrackerConsoleApp.Models
         }
         public bool UpdateTrackers()
         {
-            var hasWinTracker = PlayerList.FirstOrDefault(x => x.Wins > -1).HasWinTracker = true;
-            var hasTop3Tracker = PlayerList.FirstOrDefault(x => x.Top3 > -1).HasTop3Tracker = true;
-
-            if (!hasWinTracker || !hasTop3Tracker)
+            bool success = true;
+            Player playerWithWinsTracker = PlayerList.FirstOrDefault(x => x.OffsetWins > -1);
+            Player playerWithTop3Tracker = PlayerList.FirstOrDefault(x => x.OffsetTop3 > -1);
+            
+            if (playerWithTop3Tracker != null)
             {
-                PlayerList.ForEach(x => x.Active = false);
-                return false;
+                playerWithTop3Tracker.HasTop3Tracker = true;
             }
-            return true;
+            if(playerWithWinsTracker != null)
+            {
+                playerWithWinsTracker.HasWinTracker = true;
+            }
+            DbConnection dbConnection = new DbConnection();
+            dbConnection.ConnectToDb(connection);
+            dbConnection.SetCommandSetGameSessionData();
+            if (playerWithWinsTracker == null || playerWithTop3Tracker == null)
+            {
+                //Console.WriteLine("Setting players to inactive");
+                PlayerList.ForEach(x => x.Active = false);
+                success = false;
+            }
+
+            PlayerList.ForEach(x => dbConnection.UpdateGameSessionData(x));
+            return success;
         }
     }
 }
