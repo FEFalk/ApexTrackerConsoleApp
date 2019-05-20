@@ -47,8 +47,11 @@ namespace ApexTrackerConsoleApp
             }
             foreach (Item item in dbConnection.Items)
             {
-                Player player = new Player(item);              
-                playerList.Add(player);
+                if (item.Active)
+                {
+                    Player player = new Player(item);
+                    playerList.Add(player);
+                }
             }
         }
         public void CalibratePlayerList()
@@ -89,6 +92,12 @@ namespace ApexTrackerConsoleApp
             }
             foreach (Squad squad in squadList)
             {
+                if (squad.PlayerList.Count < 3)
+                {
+                    squad.SetPlayersInactive();
+                    squadList.Remove(squad);
+                    return;
+                }
                 var success = squad.UpdateTrackers();
 
                 if (!success)

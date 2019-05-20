@@ -36,16 +36,18 @@ namespace ApexTrackerConsoleApp
                     gameSessionId = 0;
                     continue;
                 }
-            
-                application.BuildPlayerList(GameSessionDto); //hämta playernames från db
-                application.CalibratePlayerList(); // hämta playerstats från api
-                application.BuildSquadList(GameSessionDto); //skapa squads utan stats               
-                application.CalibrateSquadList(); //updatera squads med stats tilldela trackers
 
                 while (GameSessionDto.EndTime >= DateTime.Now)
                 {
                     if (GameSessionDto.StartTime <= DateTime.Now)
                         application.Run();
+                    else
+                    {
+                        application.BuildPlayerList(GameSessionDto); //hämta playernames från db
+                        application.CalibratePlayerList(); // hämta playerstats från api
+                        application.BuildSquadList(GameSessionDto); //skapa squads utan stats               
+                        application.CalibrateSquadList(); //updatera squads med stats tilldela trackers
+                    }
                 }
                 gameSessionId = 0;
             }

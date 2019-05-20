@@ -26,6 +26,17 @@ namespace ApexTrackerConsoleApp.Models
         {
             PlayerList = players.Where(x => x.SquadId == Id).ToList();
         }
+        public void SetPlayersInactive()
+        {
+            DbConnection dbConnection = new DbConnection();
+            dbConnection.ConnectToDb(connection);
+            dbConnection.SetCommandSetGameSessionData();
+
+            //Console.WriteLine("Setting players to inactive");
+            PlayerList.ForEach(x => x.Active = false);
+
+            PlayerList.ForEach(x => dbConnection.UpdateGameSessionData(x));
+        }
         public bool UpdateTrackers()
         {
             bool success = true;
@@ -40,17 +51,12 @@ namespace ApexTrackerConsoleApp.Models
             {
                 playerWithWinsTracker.HasWinTracker = true;
             }
-            DbConnection dbConnection = new DbConnection();
-            dbConnection.ConnectToDb(connection);
-            dbConnection.SetCommandSetGameSessionData();
+
             if (playerWithWinsTracker == null || playerWithTop3Tracker == null)
             {
-                //Console.WriteLine("Setting players to inactive");
-                PlayerList.ForEach(x => x.Active = false);
+                SetPlayersInactive();
                 success = false;
             }
-
-            PlayerList.ForEach(x => dbConnection.UpdateGameSessionData(x));
             return success;
         }
     }
