@@ -18,20 +18,22 @@ namespace ApexTrackerConsoleApp
         public List<Player> playerList = new List<Player>();
         public List<Squad> squadList = new List<Squad>();
         public List<Squad> squadsWithoutTracker = new List<Squad>();
-        public void Run()
+        public void Run(GameSessionDto GameSessionDto)
         {
             dbConnection.ConnectToDb(connection);
-            
-            if(playerList == null)
+
+            if (playerList == null)
             {
                 Console.WriteLine("Playerlist empty, updating players failed.");
                 return;
             }
             foreach (Player player in playerList)
             {
-                player.LegendName = dbConnection.GetLegendNameFromDb(player.LegendId);
                 player.UpdateStatsFromAPI();
-            }          
+                // IMPORTANT! Wait 3 seconds between each request against apex.tracker.gg, or else we will get banned.
+                Thread.Sleep(3000);
+
+            }
         }
         public void BuildPlayerList(GameSessionDto gameSession)
         {

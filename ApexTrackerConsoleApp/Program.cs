@@ -26,29 +26,41 @@ namespace ApexTrackerConsoleApp
                 while (gameSessionId == 0)
                 {
                     gameSessionId = gameSession.GetGameSessionID();
-                    Thread.Sleep(60000);
+                    Thread.Sleep(1000);
                 }
                 Console.WriteLine("gamesession: " + gameSessionId);
                 GameSessionDto = gameSession.GetGameSession(gameSessionId);
                 if (gameSession.PlayersExist(GameSessionDto) == null)
                 {
-                    Console.WriteLine("Cancling gamesession.");
+                    Console.WriteLine("Canceling gamesession.");
                     gameSession.CancelGameSession(GameSessionDto);
                     gameSessionId = 0;
                     continue;
                 }
 
-                while (GameSessionDto.EndTime >= DateTime.Now)
+                while (GameSessionDto.EndTime >= DateTime.Now && !GameSessionDto.Canceled)
                 {
                     if (GameSessionDto.StartTime <= DateTime.Now)
-                        application.Run();
+                    {
+                        // If console app started in the middle of a gamesession => initialize the playerlist
+                        if (application.playerList.Count == 0)
+                            application.BuildPlayerList(GameSessionDto); //hämta playernames från db
+                        application.Run(GameSessionDto);
+                    }
                     else
                     {
                         application.BuildPlayerList(GameSessionDto); //hämta playernames från db
                         application.CalibratePlayerList(); // hämta playerstats från api
                         application.BuildSquadList(GameSessionDto); //skapa squads utan stats               
                         application.CalibrateSquadList(); //updatera squads med stats tilldela trackers
+
                     }
+                    // Wait 1 sec so that we don't spam the database with buildplayerlist etc when playerlist is empty
+                    Thread.Sleep(1000);
+                    // Check if gamesession has been canceled, so that we are not stuck in loop until endtime passed.
+                    GameSessionDto = gameSession.GetGameSession(GameSessionDto.Id);
+                    if (GameSessionDto.Canceled)
+                        Console.WriteLine("GameSession has canceled. Searching for new Active GameSession...");
                 }
                 gameSessionId = 0;
             }

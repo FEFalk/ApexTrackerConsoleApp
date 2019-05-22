@@ -26,6 +26,7 @@ namespace ApexTrackerConsoleApp
                 gameSession.StartTime = item.StartTime;
                 gameSession.EndTime = item.EndTime;
                 gameSession.MaxPlayers = item.MaxPlayers;
+                gameSession.Canceled = item.Canceled;
             }
             return gameSession;
         }

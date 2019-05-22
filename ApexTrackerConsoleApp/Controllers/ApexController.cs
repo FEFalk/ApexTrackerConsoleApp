@@ -42,7 +42,6 @@ namespace ApexTrackerConsoleApp.Controllers
                             Top3 = response.data.LegendsDto.Find(x => x.LegendMetadataDto.LegendName == legendName).Stats.Find(x => x.MetadataDto.Key == "TimesPlacedtop3") != null ? response.data.LegendsDto.Find(x => x.LegendMetadataDto.LegendName == legendName).Stats.Find(x => x.MetadataDto.Key == "TimesPlacedtop3").Value : 0
                         };
                     }
-                    Thread.Sleep(3000);
                 }
             }
             catch (Exception ex)
