@@ -26,6 +26,7 @@ namespace ApexTrackerConsoleApp
                 while (gameSessionId == 0)
                 {
                     gameSessionId = gameSession.GetGameSessionID();
+                    Thread.Sleep(60000);
                 }
                 Console.WriteLine("gamesession: " + gameSessionId);
                 GameSessionDto = gameSession.GetGameSession(gameSessionId);

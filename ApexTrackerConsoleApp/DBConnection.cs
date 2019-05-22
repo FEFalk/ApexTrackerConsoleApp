@@ -292,7 +292,7 @@ namespace ApexTrackerConsoleApp
             command.Clear();
             command.Append("SELECT Id, StartTime, EndTime, MaxPlayers, Canceled");
             command.Append(" FROM [ApexTrackerDb].[dbo].[GameSession]");
-            command.Append(" where  GETDATE() >=  DATEADD(MINUTE, -5, [dbo].[GameSession].[StartTime])");
+            command.Append(" where  GETDATE() >=  DATEADD(MINUTE, -6, [dbo].[GameSession].[StartTime])");
             command.Append(" and GETDATE () <= [dbo].[GameSession].[EndTime]");
             command.Append(" and [dbo].[GameSession].[Canceled] = 0");
         }
