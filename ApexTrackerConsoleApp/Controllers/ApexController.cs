@@ -14,6 +14,7 @@ namespace ApexTrackerConsoleApp.Controllers
         public static async Task<PlayerDto> GetApexPlayerAPI(string name, string legendName)
         {
             PlayerDto player = new PlayerDto();
+            legendName = legendName.ToLower();
             try
             {
                 
@@ -37,9 +38,9 @@ namespace ApexTrackerConsoleApp.Controllers
                             Level = response.data.MetadataDto.Level,
                             Icon = response.data.LegendsDto.FirstOrDefault() != null ? response.data.LegendsDto.FirstOrDefault().LegendMetadataDto.LegendName.ToLower() : "bangalore",
                             BGImage = response.data.LegendsDto.FirstOrDefault() != null ? response.data.LegendsDto.FirstOrDefault().LegendMetadataDto.BackgroundURL.ToString() : "https://trackercdn.com/cdn/apex.tracker.gg/legends/bangalore-concept-bg-small.jpg",
-                            Kills = response.data.LegendsDto.Find(x => x.LegendMetadataDto.LegendName == legendName).Stats.Find(x => x.MetadataDto.Key == "Kills") != null ? response.data.LegendsDto.Find(x => x.LegendMetadataDto.LegendName == legendName).Stats.Find(x => x.MetadataDto.Key == "Kills").Value : 0,
-                            Wins = response.data.LegendsDto.Find(x => x.LegendMetadataDto.LegendName == legendName).Stats.Find(x => x.MetadataDto.Key == "SeasonWins") != null ? response.data.LegendsDto.Find(x => x.LegendMetadataDto.LegendName == legendName).Stats.Find(x => x.MetadataDto.Key == "SeasonWins").Value : 0,
-                            Top3 = response.data.LegendsDto.Find(x => x.LegendMetadataDto.LegendName == legendName).Stats.Find(x => x.MetadataDto.Key == "TimesPlacedtop3") != null ? response.data.LegendsDto.Find(x => x.LegendMetadataDto.LegendName == legendName).Stats.Find(x => x.MetadataDto.Key == "TimesPlacedtop3").Value : 0
+                            Kills = response.data.LegendsDto.Find(x => x.LegendMetadataDto.LegendName.ToLower() == legendName).Stats.Find(x => x.MetadataDto.Key == "Kills") != null ? response.data.LegendsDto.Find(x => x.LegendMetadataDto.LegendName.ToLower() == legendName).Stats.Find(x => x.MetadataDto.Key == "Kills").Value : 0,
+                            Wins = response.data.LegendsDto.Find(x => x.LegendMetadataDto.LegendName.ToLower() == legendName).Stats.Find(x => x.MetadataDto.Key == "SeasonWins") != null ? response.data.LegendsDto.Find(x => x.LegendMetadataDto.LegendName.ToLower() == legendName).Stats.Find(x => x.MetadataDto.Key == "SeasonWins").Value : 0,
+                            Top3 = response.data.LegendsDto.Find(x => x.LegendMetadataDto.LegendName.ToLower() == legendName).Stats.Find(x => x.MetadataDto.Key == "TimesPlacedtop3") != null ? response.data.LegendsDto.Find(x => x.LegendMetadataDto.LegendName.ToLower() == legendName).Stats.Find(x => x.MetadataDto.Key == "TimesPlacedtop3").Value : 0
                         };
                     }
                 }

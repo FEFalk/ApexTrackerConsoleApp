@@ -52,8 +52,14 @@ namespace ApexTrackerConsoleApp
                 if (item.Active)
                 {
                     Player player = new Player(item);
+
+                    if (item.LegendId > 1)
+                    {
+                        player.LegendName = dbConnection.GetLegendNameFromDb(item.LegendId);
+                    }
                     playerList.Add(player);
                 }
+
             }
         }
         public void CalibratePlayerList()
