@@ -122,7 +122,8 @@ namespace ApexTrackerConsoleApp
         }
         public void UpdateGameSessionData(Player player)
         {
-            player.LegendId = GetLegendIdFromDb(player.LegendName);
+            if(player.LegendName != null)
+                player.LegendId = GetLegendIdFromDb(player.LegendName);
             try
             {
                 conn.Open();

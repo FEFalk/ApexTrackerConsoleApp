@@ -53,7 +53,7 @@ namespace ApexTrackerConsoleApp
                 {
                     Player player = new Player(item);
 
-                    if (item.LegendId > 1)
+                    if (item.LegendId > 0)
                     {
                         player.LegendName = dbConnection.GetLegendNameFromDb(item.LegendId);
                     }
@@ -70,7 +70,10 @@ namespace ApexTrackerConsoleApp
                 return;
             }
             foreach (Player player in playerList)
-                player.SetStatsFromAPI();
+            {
+                if(player.Active)
+                    player.SetStatsFromAPI();
+            }
         }
         public void BuildSquadList(GameSessionDto gameSession)
         {
@@ -91,7 +94,52 @@ namespace ApexTrackerConsoleApp
                 squadList.Add(squad);
             }
         }
-        public void CalibrateSquadList()
+        public void ValidateSquadSize()
+        {
+            List<Squad> squadsToRemove = new List<Squad>();
+            foreach (Squad squad in squadList)
+            {
+                if (squad.PlayerList.Count < 3)
+                {
+                    Console.WriteLine("Squad " + squad.Name + " is incomplete with " + squad.PlayerList.Count + "/3 players. Kicking...");
+                    squad.SetPlayersInactive();
+                    squadsToRemove.Add(squad);
+                }
+            }
+            foreach (Squad squad in squadsToRemove)
+            {
+                foreach(Player player in squad.PlayerList)
+                {
+                    playerList.Remove(player);
+                }
+                squadList.Remove(squad);
+            }
+        }
+        public void ValidateSquadTrackers()
+        {
+            List<Squad> squadsToRemove = new List<Squad>();
+            foreach (Squad squad in squadList)
+            {
+                Player playerWithWinsTracker = squad.PlayerList.FirstOrDefault(x => x.OffsetWins > -1);
+                Player playerWithTop3Tracker = squad.PlayerList.FirstOrDefault(x => x.OffsetTop3 > -1);
+
+                if (playerWithWinsTracker == null || playerWithTop3Tracker == null)
+                {
+                    Console.WriteLine("Squad " + squad.Name + " is missing a tracker. Kicking...");
+                    squad.SetPlayersInactive();
+                    squadsToRemove.Add(squad);
+                }
+            }
+            foreach (Squad squad in squadsToRemove)
+            {
+                foreach (Player player in squad.PlayerList)
+                {
+                    playerList.Remove(player);
+                }
+                squadList.Remove(squad);
+            }
+        }
+        public void UpdateSquadTrackers()
         {
             if (squadList == null)
             {
@@ -100,12 +148,6 @@ namespace ApexTrackerConsoleApp
             }
             foreach (Squad squad in squadList)
             {
-                if (squad.PlayerList.Count < 3)
-                {
-                    squad.SetPlayersInactive();
-                    squadList.Remove(squad);
-                    return;
-                }
                 var success = squad.UpdateTrackers();
 
                 if (!success)

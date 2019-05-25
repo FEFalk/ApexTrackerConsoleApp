@@ -42,21 +42,24 @@ namespace ApexTrackerConsoleApp.Models
             bool success = true;
             Player playerWithWinsTracker = PlayerList.FirstOrDefault(x => x.OffsetWins > -1);
             Player playerWithTop3Tracker = PlayerList.FirstOrDefault(x => x.OffsetTop3 > -1);
-            
-            if (playerWithTop3Tracker != null)
+
+            if (playerWithTop3Tracker != null && !playerWithTop3Tracker.HasTop3Tracker)
             {
                 playerWithTop3Tracker.HasTop3Tracker = true;
+                DbConnection dbConnection = new DbConnection();
+                dbConnection.ConnectToDb(connection);
+                dbConnection.SetCommandSetGameSessionData();
+                dbConnection.UpdateGameSessionData(playerWithTop3Tracker);
             }
-            if(playerWithWinsTracker != null)
+            if (playerWithWinsTracker != null && !playerWithWinsTracker.HasWinTracker)
             {
                 playerWithWinsTracker.HasWinTracker = true;
+                DbConnection dbConnection = new DbConnection();
+                dbConnection.ConnectToDb(connection);
+                dbConnection.SetCommandSetGameSessionData();
+                dbConnection.UpdateGameSessionData(playerWithWinsTracker);
             }
 
-            if (playerWithWinsTracker == null || playerWithTop3Tracker == null)
-            {
-                SetPlayersInactive();
-                success = false;
-            }
             return success;
         }
     }
