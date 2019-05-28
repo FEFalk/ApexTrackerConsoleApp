@@ -37,7 +37,26 @@ namespace ApexTrackerConsoleApp.Models
 
             PlayerList.ForEach(x => dbConnection.UpdateGameSessionData(x));
         }
-        public bool UpdateTrackers()
+        public void SetSquadPlayerTracker(Player playerWithTracker)
+        {
+            DbConnection dbConnection = new DbConnection();
+            dbConnection.ConnectToDb(connection);
+            dbConnection.SetCommandSetGameSessionData();
+            dbConnection.UpdateGameSessionData(playerWithTracker);
+        }
+        public bool CheckDuplicateLegends()
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (PlayerList[i].PlayerId != PlayerList[j].PlayerId && PlayerList[i].LegendId == PlayerList[j].LegendId)
+                        return true;
+                }
+            }
+            return false;
+        }
+        public bool ValidateTrackers()
         {
             bool success = true;
             Player playerWithWinsTracker = PlayerList.FirstOrDefault(x => x.OffsetWins > -1);
@@ -46,18 +65,12 @@ namespace ApexTrackerConsoleApp.Models
             if (playerWithTop3Tracker != null && !playerWithTop3Tracker.HasTop3Tracker)
             {
                 playerWithTop3Tracker.HasTop3Tracker = true;
-                DbConnection dbConnection = new DbConnection();
-                dbConnection.ConnectToDb(connection);
-                dbConnection.SetCommandSetGameSessionData();
-                dbConnection.UpdateGameSessionData(playerWithTop3Tracker);
+                SetSquadPlayerTracker(playerWithTop3Tracker);
             }
             if (playerWithWinsTracker != null && !playerWithWinsTracker.HasWinTracker)
             {
                 playerWithWinsTracker.HasWinTracker = true;
-                DbConnection dbConnection = new DbConnection();
-                dbConnection.ConnectToDb(connection);
-                dbConnection.SetCommandSetGameSessionData();
-                dbConnection.UpdateGameSessionData(playerWithWinsTracker);
+                SetSquadPlayerTracker(playerWithWinsTracker);
             }
 
             return success;

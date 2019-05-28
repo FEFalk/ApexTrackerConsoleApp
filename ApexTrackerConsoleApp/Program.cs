@@ -52,17 +52,16 @@ namespace ApexTrackerConsoleApp
                         if (application.playerList.Count == 0)
                         {
                             application.BuildPlayerList(GameSessionDto); //hämta playernames från db
-                            application.BuildSquadList(GameSessionDto); //skapa squads med tillhörande spelare (utan trackervalidering)    
-                            application.ValidateSquadSize(); //validera count för alla squads (så att de är 3 spelare)   
+                            application.BuildSquadList(GameSessionDto); //skapa squads med tillhörande spelare (utan trackervalidering)     
                         }
 
                         application.CalibratePlayerList(); // hämta playerstats från api
-                        application.UpdateSquadTrackers(); //updatera squads trackers i programmet och db
-
-
+                        application.ValidateSquads(); //updatera squads trackers i programmet och db
+                        Console.WriteLine("squads: " + application.squadList.Count);
                         if(GameSessionDto.StartTime.AddMinutes(-2) <= DateTime.Now)
                         {
-                            application.ValidateSquadTrackers(); //validera så att alla squads har en wins- och en top3 tracker, kick annars
+                            if(application.squadsToRemove.Count > 0)
+                                application.RemoveIncorrectSquads(); //kicka alla squads som inte har en wins- och en top3 tracker
                         }
 
                     }

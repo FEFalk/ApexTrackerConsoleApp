@@ -17,7 +17,7 @@ namespace ApexTrackerConsoleApp
 
         public List<Player> playerList = new List<Player>();
         public List<Squad> squadList = new List<Squad>();
-        public List<Squad> squadsWithoutTracker = new List<Squad>();
+        public List<Squad> squadsToRemove = new List<Squad>();
         public void Run(GameSessionDto GameSessionDto)
         {
             dbConnection.ConnectToDb(connection);
@@ -32,7 +32,6 @@ namespace ApexTrackerConsoleApp
                 player.UpdateStatsFromAPI();
                 // IMPORTANT! Wait 3 seconds between each request against apex.tracker.gg, or else we will get banned.
                 Thread.Sleep(3000);
-
             }
         }
         public void BuildPlayerList(GameSessionDto gameSession)
@@ -59,7 +58,6 @@ namespace ApexTrackerConsoleApp
                     }
                     playerList.Add(player);
                 }
-
             }
         }
         public void CalibratePlayerList()
@@ -77,7 +75,6 @@ namespace ApexTrackerConsoleApp
         }
         public void BuildSquadList(GameSessionDto gameSession)
         {
-
             dbConnection.ConnectToDb(connection);
             dbConnection.SetCommandReadSquadsFromDb();
             dbConnection.SquadItems = dbConnection.ReadSquadsFromDb(gameSession);
@@ -94,65 +91,54 @@ namespace ApexTrackerConsoleApp
                 squadList.Add(squad);
             }
         }
-        public void ValidateSquadSize()
+        public void RemoveIncorrectSquads()
         {
-            List<Squad> squadsToRemove = new List<Squad>();
-            foreach (Squad squad in squadList)
+            if(squadsToRemove != null)
             {
-                if (squad.PlayerList.Count < 3)
+                foreach (Squad squad in squadsToRemove)
                 {
-                    Console.WriteLine("Squad " + squad.Name + " is incomplete with " + squad.PlayerList.Count + "/3 players. Kicking...");
+                    Console.WriteLine("removing squad: " + squad.Name);
+                    foreach (Player player in squad.PlayerList)
+                    {
+                        playerList.Remove(player);
+                    }
                     squad.SetPlayersInactive();
-                    squadsToRemove.Add(squad);
+                    squadList.Remove(squad);
                 }
-            }
-            foreach (Squad squad in squadsToRemove)
-            {
-                foreach(Player player in squad.PlayerList)
-                {
-                    playerList.Remove(player);
-                }
-                squadList.Remove(squad);
+                squadsToRemove = new List<Squad>();
             }
         }
-        public void ValidateSquadTrackers()
+        public void ValidateSquads()
         {
-            List<Squad> squadsToRemove = new List<Squad>();
-            foreach (Squad squad in squadList)
-            {
-                Player playerWithWinsTracker = squad.PlayerList.FirstOrDefault(x => x.OffsetWins > -1);
-                Player playerWithTop3Tracker = squad.PlayerList.FirstOrDefault(x => x.OffsetTop3 > -1);
-
-                if (playerWithWinsTracker == null || playerWithTop3Tracker == null)
-                {
-                    Console.WriteLine("Squad " + squad.Name + " is missing a tracker. Kicking...");
-                    squad.SetPlayersInactive();
-                    squadsToRemove.Add(squad);
-                }
-            }
-            foreach (Squad squad in squadsToRemove)
-            {
-                foreach (Player player in squad.PlayerList)
-                {
-                    playerList.Remove(player);
-                }
-                squadList.Remove(squad);
-            }
-        }
-        public void UpdateSquadTrackers()
-        {
-            if (squadList == null)
+            if (squadList == null || squadList.Count <= 0)
             {
                 Console.WriteLine("No Squads found, updating squadlist failed.");
                 return;
             }
             foreach (Squad squad in squadList)
             {
-                var success = squad.UpdateTrackers();
-
-                if (!success)
+                if (squad.PlayerList.Count < 3)
                 {
-                    squadsWithoutTracker.Add(squad);
+                    if (!squadsToRemove.Contains(squad))
+                        squadsToRemove.Add(squad);
+                    Console.WriteLine("squad has less than 3 players: " + squad.Name);
+                }
+                else
+                {
+                    if (squad.CheckDuplicateLegends())
+                    {
+                        squadsToRemove.Add(squad);
+                        Console.WriteLine("Squad has duplicate legends: " + squad.Name);
+                    }
+                    else
+                    {
+                        var success = squad.ValidateTrackers();
+                        if (!success)
+                            squadsToRemove.Add(squad);
+
+                        else if (success && squadsToRemove.Contains(squad))
+                            squadsToRemove.Remove(squad);
+                    }
                 }
             }
         }
