@@ -57,7 +57,6 @@ namespace ApexTrackerConsoleApp
 
                         application.CalibratePlayerList(); // hämta playerstats från api
                         application.ValidateSquads(); //updatera squads trackers i programmet och db
-                        Console.WriteLine("squads: " + application.squadList.Count);
                         if(GameSessionDto.StartTime.AddMinutes(-2) <= DateTime.Now)
                         {
                             if(application.squadsToRemove.Count > 0)

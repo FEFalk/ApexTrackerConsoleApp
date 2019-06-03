@@ -214,6 +214,7 @@ namespace ApexTrackerConsoleApp
             command.Append(" where [dbo].[GameSessionData].[GameSessionId] = @gamesessionid");
             command.Append(" and [dbo].[GameSessionData].[PlayerId] = dbo.Player.Id");
             command.Append(" and [dbo].[Squad].[Id] = [dbo].[Player].[SquadId]");
+            command.Append(" group by SquadId, Name");
         }
         public List<SquadItem> ReadSquadsFromDb(GameSessionDto gameSession)
         {

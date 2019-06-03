@@ -47,25 +47,31 @@ namespace ApexTrackerConsoleApp.Models
 
         public async void UpdateStatsFromAPI()
         {
-            var playerAPIResult = await ApexController.GetApexPlayerAPI(UserName, LegendName);
-            
-            if(playerAPIResult != null)
+            try
             {
-                Kills = (int)playerAPIResult.Kills;
-                Top3 = (int)playerAPIResult.Top3;
-                Wins = (int)playerAPIResult.Wins;   
+                var playerAPIResult = await ApexController.GetApexPlayerAPI(UserName, LegendName);
+
+                if (playerAPIResult != null)
+                {
+                    Kills = (int)playerAPIResult.Kills;
+                    Top3 = (int)playerAPIResult.Top3;
+                    Wins = (int)playerAPIResult.Wins;
+                }
+                else
+                {
+                    Console.WriteLine($"Player [" + UserName + "] not found!");
+                    return;
+                }
+
+                DbConnection dbConnection = new DbConnection();
+                dbConnection.ConnectToDb(connection);
+                dbConnection.SetCommandUpdateGameSessionData();
+                dbConnection.UpdateGameSessionData(this);
             }
-            else
+            catch(Exception ex)
             {
-                Console.WriteLine($"Player [" + UserName + "] not found!");
-                return;
+                Console.WriteLine("Error: " + ex);
             }
-
-            DbConnection dbConnection = new DbConnection();
-            dbConnection.ConnectToDb(connection);
-            dbConnection.SetCommandUpdateGameSessionData();
-            dbConnection.UpdateGameSessionData(this);
-
         }
 
         public void SetStatsFromAPI()
