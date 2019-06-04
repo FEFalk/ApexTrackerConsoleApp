@@ -16,7 +16,6 @@ namespace ApexTrackerConsoleApp.Models
         public bool HasTop3Tracker { get; set; }
         public bool HasWinTracker { get; set; }
 
-        string connection = @"Server=.\SQLEXPRESS;Database=ApexTrackerDb;Trusted_Connection=True";
         public Squad(string name, int id)
         {
             this.Id = id;
@@ -29,7 +28,7 @@ namespace ApexTrackerConsoleApp.Models
         public void SetPlayersInactive()
         {
             DbConnection dbConnection = new DbConnection();
-            dbConnection.ConnectToDb(connection);
+            dbConnection.ConnectToDb(Application.connection);
             dbConnection.SetCommandSetGameSessionData();
 
             //Console.WriteLine("Setting players to inactive");
@@ -40,7 +39,7 @@ namespace ApexTrackerConsoleApp.Models
         public void SetSquadPlayerTracker(Player playerWithTracker)
         {
             DbConnection dbConnection = new DbConnection();
-            dbConnection.ConnectToDb(connection);
+            dbConnection.ConnectToDb(Application.connection);
             dbConnection.SetCommandSetGameSessionData();
             dbConnection.UpdateGameSessionData(playerWithTracker);
         }

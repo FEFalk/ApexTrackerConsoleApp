@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -66,7 +67,22 @@ namespace ApexTrackerConsoleApp
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                using (StreamWriter writer = new StreamWriter(Application.errorFilePath, true))
+                {
+                    writer.WriteLine();
+                    writer.WriteLine("-----------------------------------------------------------------------------");
+                    writer.WriteLine(DateTime.Now.ToString() + ": ");
+                    writer.WriteLine();
+
+                    while (ex != null)
+                    {
+                        writer.WriteLine(ex.GetType().FullName);
+                        writer.WriteLine("Error: " + ex.Message);
+                        writer.WriteLine("StackTrace: " + ex.StackTrace);
+
+                        ex = ex.InnerException;
+                    }
+                }
             }
             finally
             {
@@ -87,7 +103,22 @@ namespace ApexTrackerConsoleApp
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                using (StreamWriter writer = new StreamWriter(Application.errorFilePath, true))
+                {
+                    writer.WriteLine();
+                    writer.WriteLine("-----------------------------------------------------------------------------");
+                    writer.WriteLine(DateTime.Now.ToString() + ": ");
+                    writer.WriteLine();
+
+                    while (ex != null)
+                    {
+                        writer.WriteLine(ex.GetType().FullName);
+                        writer.WriteLine("Error: " + ex.Message);
+                        writer.WriteLine("StackTrace: " + ex.StackTrace);
+
+                        ex = ex.InnerException;
+                    }
+                }
             }
             finally
             {
@@ -146,7 +177,22 @@ namespace ApexTrackerConsoleApp
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                using (StreamWriter writer = new StreamWriter(Application.errorFilePath, true))
+                {
+                    writer.WriteLine();
+                    writer.WriteLine("-----------------------------------------------------------------------------");
+                    writer.WriteLine(DateTime.Now.ToString() + ": ");
+                    writer.WriteLine();
+
+                    while (ex != null)
+                    {
+                        writer.WriteLine(ex.GetType().FullName);
+                        writer.WriteLine("Error: " + ex.Message);
+                        writer.WriteLine("StackTrace: " + ex.StackTrace);
+
+                        ex = ex.InnerException;
+                    }
+                }
             }
             finally
             {
@@ -197,7 +243,22 @@ namespace ApexTrackerConsoleApp
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                using (StreamWriter writer = new StreamWriter(Application.errorFilePath, true))
+                {
+                    writer.WriteLine();
+                    writer.WriteLine("-----------------------------------------------------------------------------");
+                    writer.WriteLine(DateTime.Now.ToString() + ": ");
+                    writer.WriteLine();
+
+                    while (ex != null)
+                    {
+                        writer.WriteLine(ex.GetType().FullName);
+                        writer.WriteLine("Error: " + ex.Message);
+                        writer.WriteLine("StackTrace: " + ex.StackTrace);
+
+                        ex = ex.InnerException;
+                    }
+                }
             }
             finally
             {
@@ -239,7 +300,22 @@ namespace ApexTrackerConsoleApp
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                using (StreamWriter writer = new StreamWriter(Application.errorFilePath, true))
+                {
+                    writer.WriteLine();
+                    writer.WriteLine("-----------------------------------------------------------------------------");
+                    writer.WriteLine(DateTime.Now.ToString() + ": ");
+                    writer.WriteLine();
+
+                    while (ex != null)
+                    {
+                        writer.WriteLine(ex.GetType().FullName);
+                        writer.WriteLine("Error: " + ex.Message);
+                        writer.WriteLine("StackTrace: " + ex.StackTrace);
+
+                        ex = ex.InnerException;
+                    }
+                }
             }
             finally
             {
@@ -280,7 +356,22 @@ namespace ApexTrackerConsoleApp
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                using (StreamWriter writer = new StreamWriter(Application.errorFilePath, true))
+                {
+                    writer.WriteLine();
+                    writer.WriteLine("-----------------------------------------------------------------------------");
+                    writer.WriteLine(DateTime.Now.ToString() + ": ");
+                    writer.WriteLine();
+
+                    while (ex != null)
+                    {
+                        writer.WriteLine(ex.GetType().FullName);
+                        writer.WriteLine("Error: " + ex.Message);
+                        writer.WriteLine("StackTrace: " + ex.StackTrace);
+
+                        ex = ex.InnerException;
+                    }
+                }
             }
             finally
             {
@@ -322,7 +413,22 @@ namespace ApexTrackerConsoleApp
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                using (StreamWriter writer = new StreamWriter(Application.errorFilePath, true))
+                {
+                    writer.WriteLine();
+                    writer.WriteLine("-----------------------------------------------------------------------------");
+                    writer.WriteLine(DateTime.Now.ToString() + ": ");
+                    writer.WriteLine();
+
+                    while (ex != null)
+                    {
+                        writer.WriteLine(ex.GetType().FullName);
+                        writer.WriteLine("Error: " + ex.Message);
+                        writer.WriteLine("StackTrace: " + ex.StackTrace);
+
+                        ex = ex.InnerException;
+                    }
+                }
             }
             finally
             {
@@ -360,7 +466,22 @@ namespace ApexTrackerConsoleApp
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                using (StreamWriter writer = new StreamWriter(Application.errorFilePath, true))
+                {
+                    writer.WriteLine();
+                    writer.WriteLine("-----------------------------------------------------------------------------");
+                    writer.WriteLine(DateTime.Now.ToString() + ": ");
+                    writer.WriteLine();
+
+                    while (ex != null)
+                    {
+                        writer.WriteLine(ex.GetType().FullName);
+                        writer.WriteLine("Error: " + ex.Message);
+                        writer.WriteLine("StackTrace: " + ex.StackTrace);
+
+                        ex = ex.InnerException;
+                    }
+                }
             }
             finally
             {
@@ -397,7 +518,22 @@ namespace ApexTrackerConsoleApp
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                using (StreamWriter writer = new StreamWriter(Application.errorFilePath, true))
+                {
+                    writer.WriteLine();
+                    writer.WriteLine("-----------------------------------------------------------------------------");
+                    writer.WriteLine(DateTime.Now.ToString() + ": ");
+                    writer.WriteLine();
+
+                    while (ex != null)
+                    {
+                        writer.WriteLine(ex.GetType().FullName);
+                        writer.WriteLine("Error: " + ex.Message);
+                        writer.WriteLine("StackTrace: " + ex.StackTrace);
+
+                        ex = ex.InnerException;
+                    }
+                }
             }
             finally
             {

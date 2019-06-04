@@ -24,8 +24,6 @@ namespace ApexTrackerConsoleApp.Models
         public bool HasWinTracker;
         public bool Active;
 
-        string connection = @"Server=.\SQLEXPRESS;Database=ApexTrackerDb;Trusted_Connection=True";
-
         public Player(Item item)
         {
             UserName = item.UserName;
@@ -64,7 +62,7 @@ namespace ApexTrackerConsoleApp.Models
                 }
 
                 DbConnection dbConnection = new DbConnection();
-                dbConnection.ConnectToDb(connection);
+                dbConnection.ConnectToDb(Application.connection);
                 dbConnection.SetCommandUpdateGameSessionData();
                 dbConnection.UpdateGameSessionData(this);
             }
@@ -92,7 +90,7 @@ namespace ApexTrackerConsoleApp.Models
             }
 
             DbConnection dbConnection = new DbConnection();
-            dbConnection.ConnectToDb(connection);
+            dbConnection.ConnectToDb(Application.connection);
             dbConnection.SetCommandSetGameSessionData();
             dbConnection.UpdateGameSessionData(this);
         }

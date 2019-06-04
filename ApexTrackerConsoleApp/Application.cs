@@ -13,8 +13,8 @@ namespace ApexTrackerConsoleApp
     class Application
     {
         DbConnection dbConnection = new DbConnection();
-        string connection = @"Server=.\SQLEXPRESS;Database=ApexTrackerDb;Trusted_Connection=True";
-
+        public const string connection = @"Server=.\SQLEXPRESS;Database=ApexTrackerDb;Trusted_Connection=True";
+        public const string errorFilePath = @".\Error.txt";
         public List<Player> playerList = new List<Player>();
         public List<Squad> squadList = new List<Squad>();
         public List<Squad> squadsToRemove = new List<Squad>();

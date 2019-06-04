@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using ApexTrackerConsoleApp.Models;
 using System.Threading;
+using System.IO;
 
 namespace ApexTrackerConsoleApp.Controllers
 {
@@ -47,6 +48,22 @@ namespace ApexTrackerConsoleApp.Controllers
             }
             catch (Exception ex)
             {
+                using (StreamWriter writer = new StreamWriter(Application.errorFilePath, true))
+                {
+                    writer.WriteLine();
+                    writer.WriteLine("-----------------------------------------------------------------------------");
+                    writer.WriteLine(DateTime.Now.ToString() + ": ");
+                    writer.WriteLine();
+
+                    while (ex != null)
+                    {
+                        writer.WriteLine(ex.GetType().FullName);
+                        writer.WriteLine("Error: " + ex.Message);
+                        writer.WriteLine("StackTrace: " + ex.StackTrace);
+
+                        ex = ex.InnerException;
+                    }
+                }
             }
             return player;
         }
@@ -85,6 +102,22 @@ namespace ApexTrackerConsoleApp.Controllers
             }
             catch (Exception ex)
             {
+                using (StreamWriter writer = new StreamWriter(Application.errorFilePath, true))
+                {
+                    writer.WriteLine();
+                    writer.WriteLine("-----------------------------------------------------------------------------");
+                    writer.WriteLine(DateTime.Now.ToString() + ": ");
+                    writer.WriteLine();
+
+                    while (ex != null)
+                    {
+                        writer.WriteLine(ex.GetType().FullName);
+                        writer.WriteLine("Error: " + ex.Message);
+                        writer.WriteLine("StackTrace: " + ex.StackTrace);
+
+                        ex = ex.InnerException;
+                    }
+                }
             }
             return player;
         }
