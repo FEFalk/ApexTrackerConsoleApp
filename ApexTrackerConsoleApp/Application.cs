@@ -29,6 +29,8 @@ namespace ApexTrackerConsoleApp
             }
             foreach (Player player in playerList)
             {
+                dbConnection.SetCommandInsertGameSessionDataLog();
+                dbConnection.UpdateGameSessionDataLog(player);
                 player.UpdateStatsFromAPI();
                 // IMPORTANT! Wait 3 seconds between each request against apex.tracker.gg, or else we will get banned.
                 Thread.Sleep(3000);

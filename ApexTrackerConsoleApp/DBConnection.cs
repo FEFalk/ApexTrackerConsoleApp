@@ -199,6 +199,61 @@ namespace ApexTrackerConsoleApp
                 conn.Close();
             }
         }
+        public void SetCommandInsertGameSessionDataLog()
+        {
+            command.Clear();
+            command.Append("INSERT INTO [ApexTrackerDb].[dbo].[GameSessionDataLog]");
+            command.Append(" (Date, HasWinTracker, HasTop3Tracker, LegendId, Kills, Top3, Wins, Active)");
+            command.Append(" VALUES");          
+            command.Append(" (@date, @haswintracker, @hastop3tracker, @legendid, @kills, @top3, @wins, @active)");
+            command.Append(" where [dbo].[GameSessionData].[GameSessionId] = @gamesessionid");
+            command.Append(" and [dbo].[GameSessionData].[PlayerId] = @playerid");
+        }
+        public void UpdateGameSessionDataLog(Player player)
+        {
+            if (player.LegendName != null)
+                player.LegendId = GetLegendIdFromDb(player.LegendName);
+            try
+            {
+                conn.Open();
+                var sqlcommand = new SqlCommand(command.ToString(), conn);
+                sqlcommand.CommandText = command.ToString();
+                sqlcommand.Parameters.AddWithValue("@date", DateTime.Now);
+                sqlcommand.Parameters.AddWithValue("@kills", player.Kills);
+                sqlcommand.Parameters.AddWithValue("@top3", player.Top3);
+                sqlcommand.Parameters.AddWithValue("@wins", player.Wins);
+                sqlcommand.Parameters.AddWithValue("@hastop3tracker", player.HasTop3Tracker);
+                sqlcommand.Parameters.AddWithValue("@active", player.Active);
+                sqlcommand.Parameters.AddWithValue("@haswintracker", player.HasWinTracker);
+                sqlcommand.Parameters.AddWithValue("@gamesessionid", player.GameSessionId);
+                sqlcommand.Parameters.AddWithValue("@playerid", player.PlayerId);
+
+                var writer = sqlcommand.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter writer = new StreamWriter(Application.errorFilePath, true))
+                {
+                    writer.WriteLine();
+                    writer.WriteLine("-----------------------------------------------------------------------------");
+                    writer.WriteLine(DateTime.Now.ToString() + ": ");
+                    writer.WriteLine();
+
+                    while (ex != null)
+                    {
+                        writer.WriteLine(ex.GetType().FullName);
+                        writer.WriteLine("Error: " + ex.Message);
+                        writer.WriteLine("StackTrace: " + ex.StackTrace);
+
+                        ex = ex.InnerException;
+                    }
+                }
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
 
         public void SetCommandReadPlayersFromDb()
         {
