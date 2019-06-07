@@ -34,6 +34,7 @@ namespace ApexTrackerConsoleApp
                 {
                     Console.WriteLine("Canceling gamesession.");
                     gameSession.CancelGameSession(GameSessionDto);
+                    GameSessionDto.Canceled = true;
                     gameSessionId = 0;
                     continue;
                 }
@@ -42,6 +43,15 @@ namespace ApexTrackerConsoleApp
                 {
                     if (GameSessionDto.StartTime <= DateTime.Now)
                     {
+                        if (!application.playerList.Exists(x => x.Active))
+                        {
+                            Console.WriteLine("No players active, canceling gamesession.");
+                            gameSession.CancelGameSession(GameSessionDto);
+                            GameSessionDto.Canceled = true;
+                            gameSessionId = 0;
+                            continue;
+                        }
+                            
                         // If console app started in the middle of a gamesession => initialize the playerlist
                         if (application.playerList.Count == 0)
                             application.BuildPlayerList(GameSessionDto); //hämta playernames från db
@@ -57,10 +67,18 @@ namespace ApexTrackerConsoleApp
 
                         application.CalibratePlayerList(); // hämta playerstats från api
                         application.ValidateSquads(); //updatera squads trackers i programmet och db
-                        if(GameSessionDto.StartTime.AddMinutes(-2) <= DateTime.Now)
+                        if (GameSessionDto.StartTime.AddMinutes(-2) <= DateTime.Now)
                         {
-                            if(application.squadsToRemove.Count > 0)
+                            if (application.squadsToRemove.Count > 0)
                                 application.RemoveIncorrectSquads(); //kicka alla squads som inte har en wins- och en top3 tracker
+                            if (application.squadList.Count <= 0)
+                            {
+                                Console.WriteLine("No squads active, canceling gamesession.");
+                                gameSession.CancelGameSession(GameSessionDto);
+                                GameSessionDto.Canceled = true;
+                                gameSessionId = 0;
+                                continue;
+                            }
                         }
 
                     }
