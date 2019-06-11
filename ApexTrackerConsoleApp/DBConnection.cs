@@ -203,11 +203,10 @@ namespace ApexTrackerConsoleApp
         {
             command.Clear();
             command.Append("INSERT INTO [ApexTrackerDb].[dbo].[GameSessionDataLog]");
-            command.Append(" (Date, HasWinTracker, HasTop3Tracker, LegendId, Kills, Top3, Wins, Active)");
+            command.Append(" (Date, PlayerId, GameSessionId, HasWinTracker, HasTop3Tracker, LegendId, Kills, Top3, Wins, Active)");
             command.Append(" VALUES");          
-            command.Append(" (@date, @haswintracker, @hastop3tracker, @legendid, @kills, @top3, @wins, @active)");
-            command.Append(" where [dbo].[GameSessionData].[GameSessionId] = @gamesessionid");
-            command.Append(" and [dbo].[GameSessionData].[PlayerId] = @playerid");
+            command.Append("(@date, @playerid, @gamesessionid, @haswintracker, @hastop3tracker, @legendid, @kills, @top3, @wins, @active)");
+
         }
         public void UpdateGameSessionDataLog(Player player)
         {
@@ -219,14 +218,15 @@ namespace ApexTrackerConsoleApp
                 var sqlcommand = new SqlCommand(command.ToString(), conn);
                 sqlcommand.CommandText = command.ToString();
                 sqlcommand.Parameters.AddWithValue("@date", DateTime.Now);
+                sqlcommand.Parameters.AddWithValue("@playerid", player.PlayerId);
+                sqlcommand.Parameters.AddWithValue("@gamesessionid", player.GameSessionId);
+                sqlcommand.Parameters.AddWithValue("@haswintracker", player.HasWinTracker);
+                sqlcommand.Parameters.AddWithValue("@hastop3tracker", player.HasTop3Tracker);
+                sqlcommand.Parameters.AddWithValue("@legendid", player.LegendId);
                 sqlcommand.Parameters.AddWithValue("@kills", player.Kills);
                 sqlcommand.Parameters.AddWithValue("@top3", player.Top3);
                 sqlcommand.Parameters.AddWithValue("@wins", player.Wins);
-                sqlcommand.Parameters.AddWithValue("@hastop3tracker", player.HasTop3Tracker);
                 sqlcommand.Parameters.AddWithValue("@active", player.Active);
-                sqlcommand.Parameters.AddWithValue("@haswintracker", player.HasWinTracker);
-                sqlcommand.Parameters.AddWithValue("@gamesessionid", player.GameSessionId);
-                sqlcommand.Parameters.AddWithValue("@playerid", player.PlayerId);
 
                 var writer = sqlcommand.ExecuteNonQuery();
             }

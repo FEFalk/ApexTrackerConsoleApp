@@ -48,23 +48,31 @@ namespace ApexTrackerConsoleApp.Models
             try
             {
                 var playerAPIResult = await ApexController.GetApexPlayerAPI(UserName, LegendName);
+                DbConnection dbConnection = new DbConnection();
 
                 if (playerAPIResult != null)
                 {
+                    if(Kills < (int)playerAPIResult.Kills || 
+                       Top3 < (int)playerAPIResult.Top3 || 
+                       Wins < (int)playerAPIResult.Wins)
+                    {
+                        dbConnection.ConnectToDb(Application.connection);
+                        dbConnection.SetCommandInsertGameSessionDataLog();
+                        dbConnection.UpdateGameSessionDataLog(this);
+                    }
                     Kills = (int)playerAPIResult.Kills;
                     Top3 = (int)playerAPIResult.Top3;
                     Wins = (int)playerAPIResult.Wins;
+
+                    dbConnection.ConnectToDb(Application.connection);
+                    dbConnection.SetCommandUpdateGameSessionData();
+                    dbConnection.UpdateGameSessionData(this);
                 }
                 else
                 {
                     Console.WriteLine($"Player [" + UserName + "] not found!");
                     return;
                 }
-
-                DbConnection dbConnection = new DbConnection();
-                dbConnection.ConnectToDb(Application.connection);
-                dbConnection.SetCommandUpdateGameSessionData();
-                dbConnection.UpdateGameSessionData(this);
             }
             catch(Exception ex)
             {
