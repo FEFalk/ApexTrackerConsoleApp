@@ -56,6 +56,10 @@ namespace ApexTrackerConsoleApp.Models
                        Top3 < (int)playerAPIResult.Top3 || 
                        Wins < (int)playerAPIResult.Wins)
                     {
+                        //Deltavalues used for gamesessiondatalog so only the current update is logged.
+                        Kills = (int)playerAPIResult.Kills - Kills;
+                        Top3 = (int)playerAPIResult.Top3 - Top3;
+                        Wins = (int)playerAPIResult.Wins - Wins;
                         dbConnection.ConnectToDb(Application.connection);
                         dbConnection.SetCommandInsertGameSessionDataLog();
                         dbConnection.UpdateGameSessionDataLog(this);
