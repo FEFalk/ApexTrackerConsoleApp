@@ -47,8 +47,13 @@ namespace ApexTrackerConsoleApp.Models
         {
             try
             {
-                var playerAPIResult = await ApexController.GetApexPlayerAPI(UserName, LegendName);
+                if (UserName == null)
+                    return;
                 DbConnection dbConnection = new DbConnection();
+                if (LegendName == null)
+                    LegendName = dbConnection.GetLegendNameFromDb(LegendId);
+                
+                var playerAPIResult = await ApexController.GetApexPlayerAPI(UserName, LegendName);
 
                 if (playerAPIResult != null)
                 {

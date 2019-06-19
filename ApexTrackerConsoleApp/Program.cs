@@ -43,6 +43,10 @@ namespace ApexTrackerConsoleApp
                 {
                     if (GameSessionDto.StartTime <= DateTime.Now)
                     {
+                        // If console app started in the middle of a gamesession => initialize the playerlist
+                        if (application.playerList.Count == 0)
+                            application.BuildPlayerList(GameSessionDto); //hämta playernames från db
+
                         if (!application.playerList.Exists(x => x.Active))
                         {
                             Console.WriteLine("No players active, canceling gamesession.");
@@ -51,10 +55,6 @@ namespace ApexTrackerConsoleApp
                             gameSessionId = 0;
                             continue;
                         }
-                            
-                        // If console app started in the middle of a gamesession => initialize the playerlist
-                        if (application.playerList.Count == 0)
-                            application.BuildPlayerList(GameSessionDto); //hämta playernames från db
                         application.Run(GameSessionDto);
                     }
                     else
