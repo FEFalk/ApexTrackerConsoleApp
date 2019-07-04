@@ -57,10 +57,13 @@ namespace ApexTrackerConsoleApp.Models
         }
         public bool ValidateTrackers()
         {
-            bool success = true;
             Player playerWithWinsTracker = PlayerList.FirstOrDefault(x => x.OffsetWins > -1);
             Player playerWithTop3Tracker = PlayerList.FirstOrDefault(x => x.OffsetTop3 > -1);
 
+            if (playerWithTop3Tracker == null || playerWithTop3Tracker == null)
+            {
+                return false;
+            }
             if (playerWithTop3Tracker != null && !playerWithTop3Tracker.HasTop3Tracker)
             {
                 playerWithTop3Tracker.HasTop3Tracker = true;
@@ -71,8 +74,7 @@ namespace ApexTrackerConsoleApp.Models
                 playerWithWinsTracker.HasWinTracker = true;
                 SetSquadPlayerTracker(playerWithWinsTracker);
             }
-
-            return success;
+            return true;
         }
     }
 }

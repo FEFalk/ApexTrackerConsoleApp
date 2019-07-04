@@ -56,6 +56,10 @@ namespace ApexTrackerConsoleApp
                     {
                         player.LegendName = dbConnection.GetLegendNameFromDb(item.LegendId);
                     }
+                    if (item.PlatformId > 0)
+                    {
+                        player.Platform = dbConnection.GetPlatformApexTrackerIdFromDb(item.PlatformId);
+                    }
                     playerList.Add(player);
                 }
             }

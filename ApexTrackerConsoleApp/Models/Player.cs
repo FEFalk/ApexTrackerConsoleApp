@@ -23,6 +23,7 @@ namespace ApexTrackerConsoleApp.Models
         public bool HasTop3Tracker;
         public bool HasWinTracker;
         public bool Active;
+        public int Platform;
 
         public Player(Item item)
         {
@@ -32,15 +33,16 @@ namespace ApexTrackerConsoleApp.Models
             GameSessionId = item.GameSessionId;
             LegendId = item.LegendId;
             LegendName = item.LegendName;
-            Kills = item.Kills;
-            Top3 = item.Top3;
-            Wins = item.Wins;
+            Kills = item.OffsetKills;
+            Top3 = item.OffsetTop3;
+            Wins = item.OffsetWins;
             OffsetKills = item.OffsetKills;
             OffsetTop3 = item.OffsetTop3;
             OffsetWins = item.OffsetWins;
             HasTop3Tracker = item.HasTop3Tracker;
             HasWinTracker = item.HasWinTracker;
             Active = item.Active;
+            Platform = item.PlatformApexTrackerId;
         }
 
         public async void UpdateStatsFromAPI()
@@ -53,13 +55,13 @@ namespace ApexTrackerConsoleApp.Models
                 if (LegendName == null)
                     LegendName = dbConnection.GetLegendNameFromDb(LegendId);
                 
-                var playerAPIResult = await ApexController.GetApexPlayerAPI(UserName, LegendName);
+                var playerAPIResult = await ApexController.GetApexPlayerAPI(UserName, LegendName, Platform);
 
                 if (playerAPIResult != null)
                 {
                     if(Kills < (int)playerAPIResult.Kills || 
-                       Top3 < (int)playerAPIResult.Top3 || 
-                       Wins < (int)playerAPIResult.Wins)
+                       (HasTop3Tracker && Top3 < (int)playerAPIResult.Top3) || 
+                       (HasWinTracker && Wins < (int)playerAPIResult.Wins))
                     {
                         //Deltavalues used for gamesessiondatalog so only the current update is logged.
                         Kills = (int)playerAPIResult.Kills - Kills;
@@ -91,10 +93,13 @@ namespace ApexTrackerConsoleApp.Models
 
         public void SetStatsFromAPI()
         {
-            var playerAPIResult = ApexController.GetApexPlayerOffsetsAPI(UserName)?.Result;
+            var playerAPIResult = ApexController.GetApexPlayerOffsetsAPI(UserName, Platform)?.Result;
 
             if (playerAPIResult != null)
             {
+                this.Kills = (int)playerAPIResult.Kills;
+                this.Top3 = (int)playerAPIResult.Top3;
+                this.Wins = (int)playerAPIResult.Wins;
                 this.OffsetKills = (int)playerAPIResult.Kills;
                 this.OffsetTop3 = (int)playerAPIResult.Top3;
                 this.OffsetWins = (int)playerAPIResult.Wins;

@@ -30,6 +30,8 @@ namespace ApexTrackerConsoleApp
         public int OffsetWins { get; set; }
         public bool HasTop3Tracker { get; set; }
         public bool HasWinTracker { get; set; }
+        public int PlatformId { get; set; }
+        public int PlatformApexTrackerId { get; set; }
         public bool Active { get; set; }
 
     }
@@ -258,7 +260,7 @@ namespace ApexTrackerConsoleApp
         public void SetCommandReadPlayersFromDb()
         {
             command.Clear();
-            command.Append("SELECT UserName, PlayerId, SquadId, GameSessionId, LegendId, Kills, Top3, Wins, OffsetKills, OffsetTop3, OffsetWins, HasTop3Tracker, HasWinTracker, Active");
+            command.Append("SELECT UserName, PlayerId, SquadId, GameSessionId, LegendId, Kills, Top3, Wins, OffsetKills, OffsetTop3, OffsetWins, HasTop3Tracker, HasWinTracker, PlatformId, Active");
             command.Append(" FROM [ApexTrackerDb].[dbo].[GameSessionData], dbo.Player");
             command.Append(" where [dbo].[GameSessionData].[GameSessionId] = @gamesessionid");
             command.Append(" and [dbo].[GameSessionData].[PlayerId] = dbo.Player.Id");
@@ -290,7 +292,8 @@ namespace ApexTrackerConsoleApp
                         OffsetWins = Int32.Parse(reader[10].ToString()),
                         HasTop3Tracker = Boolean.Parse(reader[11].ToString()),
                         HasWinTracker = Boolean.Parse(reader[12].ToString()),
-                        Active = Boolean.Parse(reader[13].ToString())
+                        PlatformId = Int32.Parse(reader[13].ToString()),
+                        Active = Boolean.Parse(reader[14].ToString())
                     });
                 }
                 reader.Dispose();
@@ -596,6 +599,57 @@ namespace ApexTrackerConsoleApp
             }
             if (Items.Count > 0)
                 return Items[0].LegendId;
+            else
+                return 0;
+        }
+        public int GetPlatformApexTrackerIdFromDb(int platformId)
+        {
+            try
+            {
+                string command = "SELECT Id, ApexTrackerId " +
+                                 "FROM [ApexTrackerDb].[dbo].[Platform] " +
+                                 "where [dbo].[Platform].[id] = @platformId";
+                //TODO: if open dont open               
+                conn.Open();
+                var sqlcommand = new SqlCommand(command, conn);
+                sqlcommand.Parameters.AddWithValue("@platformId", platformId);
+                var reader = sqlcommand.ExecuteReader();
+                Items = new List<Item>();
+                while (reader.Read())
+                {
+                    Items.Add(new Item
+                    {
+                        PlatformApexTrackerId = Int32.Parse(reader[1].ToString()),
+                    });
+                }
+                reader.Dispose();
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter writer = new StreamWriter(Application.errorFilePath, true))
+                {
+                    writer.WriteLine();
+                    writer.WriteLine("-----------------------------------------------------------------------------");
+                    writer.WriteLine(DateTime.Now.ToString() + ": ");
+                    writer.WriteLine();
+
+                    while (ex != null)
+                    {
+                        writer.WriteLine(ex.GetType().FullName);
+                        writer.WriteLine("Error: " + ex.Message);
+                        writer.WriteLine("StackTrace: " + ex.StackTrace);
+
+                        ex = ex.InnerException;
+                    }
+                }
+            }
+            finally
+            {
+                conn.Close();
+            }
+            if (Items.Count > 0)
+                return Items[0].PlatformApexTrackerId;
             else
                 return 0;
         }
