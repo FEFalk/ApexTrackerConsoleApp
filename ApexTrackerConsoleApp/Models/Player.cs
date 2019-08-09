@@ -10,6 +10,7 @@ namespace ApexTrackerConsoleApp.Models
     {
         public string UserName;
         public string PlayerId;
+        public string OriginId;
         public int SquadId;
         public int GameSessionId;
         public int LegendId;
@@ -24,11 +25,14 @@ namespace ApexTrackerConsoleApp.Models
         public bool HasWinTracker;
         public bool Active;
         public int Platform;
+        public bool InMatch;
+        public int RankScore;
 
         public Player(Item item)
         {
             UserName = item.UserName;
             PlayerId = item.PlayerId;
+            OriginId = item.OriginId;
             SquadId = item.SquadId;
             GameSessionId = item.GameSessionId;
             LegendId = item.LegendId;
@@ -43,6 +47,8 @@ namespace ApexTrackerConsoleApp.Models
             HasWinTracker = item.HasWinTracker;
             Active = item.Active;
             Platform = item.PlatformApexTrackerId;
+            InMatch = item.InMatch;
+            RankScore = item.RankScore;
         }
 
         public async void UpdateStatsFromAPI()
@@ -55,25 +61,27 @@ namespace ApexTrackerConsoleApp.Models
                 if (LegendName == null)
                     LegendName = dbConnection.GetLegendNameFromDb(LegendId);
                 
-                var playerAPIResult = await ApexController.GetApexPlayerAPI(UserName, LegendName, Platform);
+                var playerAPIResult = await ApexController.GetApexPlayerAPI(OriginId, LegendName, Platform);
 
                 if (playerAPIResult != null)
                 {
-                    if(Kills < (int)playerAPIResult.Kills || 
-                       (HasTop3Tracker && Top3 < (int)playerAPIResult.Top3) || 
-                       (HasWinTracker && Wins < (int)playerAPIResult.Wins))
+                    if(Kills < playerAPIResult.Kills || 
+                       (HasTop3Tracker && Top3 < playerAPIResult.Top3) || 
+                       (HasWinTracker && Wins < playerAPIResult.Wins) ||
+                       (InMatch && !playerAPIResult.InMatch))
                     {
                         //Deltavalues used for gamesessiondatalog so only the current update is logged.
-                        Kills = (int)playerAPIResult.Kills - Kills;
-                        Top3 = (int)playerAPIResult.Top3 - Top3;
-                        Wins = (int)playerAPIResult.Wins - Wins;
+                        Kills = playerAPIResult.Kills - Kills;
+                        Top3 = playerAPIResult.Top3 - Top3;
+                        Wins = playerAPIResult.Wins - Wins;
+                        InMatch = playerAPIResult.InMatch;
                         dbConnection.ConnectToDb(Application.connection);
                         dbConnection.SetCommandInsertGameSessionDataLog();
                         dbConnection.UpdateGameSessionDataLog(this);
                     }
-                    Kills = (int)playerAPIResult.Kills;
-                    Top3 = (int)playerAPIResult.Top3;
-                    Wins = (int)playerAPIResult.Wins;
+                    Kills = playerAPIResult.Kills;
+                    Top3 = playerAPIResult.Top3;
+                    Wins = playerAPIResult.Wins;
 
                     dbConnection.ConnectToDb(Application.connection);
                     dbConnection.SetCommandUpdateGameSessionData();
@@ -93,7 +101,7 @@ namespace ApexTrackerConsoleApp.Models
 
         public void SetStatsFromAPI()
         {
-            var playerAPIResult = ApexController.GetApexPlayerOffsetsAPI(UserName, Platform)?.Result;
+            var playerAPIResult = ApexController.GetApexPlayerOffsetsAPI(OriginId, Platform)?.Result;
 
             if (playerAPIResult != null)
             {
@@ -103,7 +111,10 @@ namespace ApexTrackerConsoleApp.Models
                 this.OffsetKills = (int)playerAPIResult.Kills;
                 this.OffsetTop3 = (int)playerAPIResult.Top3;
                 this.OffsetWins = (int)playerAPIResult.Wins;
-                this.LegendName = playerAPIResult.Icon;
+                this.LegendName = playerAPIResult.LegendName;
+                this.InMatch = playerAPIResult.InMatch;
+                this.RankScore = playerAPIResult.RankScore;
+                
             }
             else
             {

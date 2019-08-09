@@ -9,12 +9,16 @@ namespace ApexTrackerConsoleApp.Models
 {
     public class PlayerDto
     {
-        public float Kills { get; set; }
+        public int Kills { get; set; }
         public string Name { get; set; }
-        public float Wins { get; set; }
-        public float Top3 { get; set; }
-        public string Icon { get; set; }
-        public string BGImage { get; set; }
+        public string UserId { get; set; }
+        public string OriginId { get; set; }
+        public int Wins { get; set; }
+        public int Top3 { get; set; }
         public int Level { get; set; }
+        public string LegendName { get; set; }
+        public bool InMatch { get; set; }
+        public int RankScore { get; set; }
+
     }
 }

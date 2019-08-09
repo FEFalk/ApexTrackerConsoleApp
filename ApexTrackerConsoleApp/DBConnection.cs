@@ -14,6 +14,7 @@ namespace ApexTrackerConsoleApp
     {
         public string UserName { get; set; }
         public string PlayerId { get; set; }
+        public string OriginId { get; set; }
         public int SquadId { get; set; }
         public int GameSessionId { get; set; }
         public int LegendId { get; set; }
@@ -33,13 +34,21 @@ namespace ApexTrackerConsoleApp
         public int PlatformId { get; set; }
         public int PlatformApexTrackerId { get; set; }
         public bool Active { get; set; }
+        public bool InMatch { get; set; }
+        public int RankScore { get; set; }
 
     }
     public class SquadItem
     {
         public int Id { get; set; }
         public string Name { get; set; }
-
+    }
+    public class AuthTokenItem
+    {
+        public int Id { get; set; }
+        public string UserId { get; set; }
+        public string AuthToken { get; set; }
+        public DateTime ExpiryDate { get; set; }
 
     }
     class DbConnection
@@ -48,6 +57,7 @@ namespace ApexTrackerConsoleApp
 
         public List<Item> Items = new List<Item>();
         public List<SquadItem> SquadItems = new List<SquadItem>();
+        public List<AuthTokenItem> AuthTokenItems = new List<AuthTokenItem>();
         StringBuilder command = new StringBuilder();
         public DbConnection()
         {
@@ -260,7 +270,7 @@ namespace ApexTrackerConsoleApp
         public void SetCommandReadPlayersFromDb()
         {
             command.Clear();
-            command.Append("SELECT UserName, PlayerId, SquadId, GameSessionId, LegendId, Kills, Top3, Wins, OffsetKills, OffsetTop3, OffsetWins, HasTop3Tracker, HasWinTracker, PlatformId, Active");
+            command.Append("SELECT UserName, PlayerId, OriginId, SquadId, GameSessionId, LegendId, Kills, Top3, Wins, OffsetKills, OffsetTop3, OffsetWins, HasTop3Tracker, HasWinTracker, PlatformId, Active");
             command.Append(" FROM [ApexTrackerDb].[dbo].[GameSessionData], dbo.Player");
             command.Append(" where [dbo].[GameSessionData].[GameSessionId] = @gamesessionid");
             command.Append(" and [dbo].[GameSessionData].[PlayerId] = dbo.Player.Id");
@@ -281,19 +291,20 @@ namespace ApexTrackerConsoleApp
                     { 
                         UserName = reader[0].ToString(),
                         PlayerId = reader[1].ToString(),
-                        SquadId = Int32.Parse(reader[2].ToString()),
-                        GameSessionId = Int32.Parse(reader[3].ToString()),
-                        LegendId = Int32.Parse(reader[4].ToString()),
-                        Kills = Int32.Parse(reader[5].ToString()),
-                        Top3 = Int32.Parse(reader[6].ToString()),
-                        Wins = Int32.Parse(reader[7].ToString()),
-                        OffsetKills = Int32.Parse(reader[8].ToString()),
-                        OffsetTop3 = Int32.Parse(reader[9].ToString()),
-                        OffsetWins = Int32.Parse(reader[10].ToString()),
-                        HasTop3Tracker = Boolean.Parse(reader[11].ToString()),
-                        HasWinTracker = Boolean.Parse(reader[12].ToString()),
-                        PlatformId = Int32.Parse(reader[13].ToString()),
-                        Active = Boolean.Parse(reader[14].ToString())
+                        OriginId = reader[2].ToString(),
+                        SquadId = Int32.Parse(reader[3].ToString()),
+                        GameSessionId = Int32.Parse(reader[4].ToString()),
+                        LegendId = Int32.Parse(reader[5].ToString()),
+                        Kills = Int32.Parse(reader[6].ToString()),
+                        Top3 = Int32.Parse(reader[7].ToString()),
+                        Wins = Int32.Parse(reader[8].ToString()),
+                        OffsetKills = Int32.Parse(reader[9].ToString()),
+                        OffsetTop3 = Int32.Parse(reader[10].ToString()),
+                        OffsetWins = Int32.Parse(reader[11].ToString()),
+                        HasTop3Tracker = Boolean.Parse(reader[12].ToString()),
+                        HasWinTracker = Boolean.Parse(reader[13].ToString()),
+                        PlatformId = Int32.Parse(reader[14].ToString()),
+                        Active = Boolean.Parse(reader[15].ToString())
                     });
                 }
                 reader.Dispose();
@@ -652,6 +663,103 @@ namespace ApexTrackerConsoleApp
                 return Items[0].PlatformApexTrackerId;
             else
                 return 0;
+        }
+
+        public void SetCommandReadAuthTokenFromDb()
+        {
+            command.Clear();
+            command.Append("SELECT *");
+            command.Append(" FROM [ApexTrackerDb].[dbo].[OriginAuthorization]");
+        }
+        public List<AuthTokenItem> ReadAuthTokenFromDb()
+        {
+            try
+            {
+                //TODO: if open dont open               
+                conn.Open();
+                var sqlcommand = new SqlCommand(command.ToString(), conn);
+                var reader = sqlcommand.ExecuteReader();
+                AuthTokenItems = new List<AuthTokenItem>();
+                while (reader.Read())
+                {
+                    AuthTokenItems.Add(new AuthTokenItem
+                    {
+                        Id = Int32.Parse(reader[0].ToString()),
+                        UserId = reader[1].ToString(),
+                        AuthToken = reader[2].ToString(),
+                        ExpiryDate = DateTime.Parse(reader[3].ToString()),
+                    });
+                }
+                reader.Dispose();
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter writer = new StreamWriter(Application.errorFilePath, true))
+                {
+                    writer.WriteLine();
+                    writer.WriteLine("-----------------------------------------------------------------------------");
+                    writer.WriteLine(DateTime.Now.ToString() + ": ");
+                    writer.WriteLine();
+
+                    while (ex != null)
+                    {
+                        writer.WriteLine(ex.GetType().FullName);
+                        writer.WriteLine("Error: " + ex.Message);
+                        writer.WriteLine("StackTrace: " + ex.StackTrace);
+
+                        ex = ex.InnerException;
+                    }
+                }
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return AuthTokenItems;
+        }
+        public void SetCommandUpdateAuthToken()
+        {
+            command.Clear();
+            command.Append("UPDATE [ApexTrackerDb].[dbo].[OriginAuthorization]");
+            command.Append(" SET AuthToken = @authToken,");
+            command.Append(" ExpiryDate = @expiryDate");
+        }
+        public void UpdateAuthToken(AuthTokenItem authTokenInfo)
+        {
+            try
+            {
+                conn.Open();
+                var sqlcommand = new SqlCommand(command.ToString(), conn);
+                sqlcommand.CommandText = command.ToString();
+                sqlcommand.Parameters.AddWithValue("@authToken", authTokenInfo.AuthToken);
+                sqlcommand.Parameters.AddWithValue("@expiryDate", authTokenInfo.ExpiryDate);
+
+                var writer = sqlcommand.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter writer = new StreamWriter(Application.errorFilePath, true))
+                {
+                    writer.WriteLine();
+                    writer.WriteLine("-----------------------------------------------------------------------------");
+                    writer.WriteLine(DateTime.Now.ToString() + ": ");
+                    writer.WriteLine();
+
+                    while (ex != null)
+                    {
+                        writer.WriteLine(ex.GetType().FullName);
+                        writer.WriteLine("Error: " + ex.Message);
+                        writer.WriteLine("StackTrace: " + ex.StackTrace);
+
+                        ex = ex.InnerException;
+                    }
+                }
+            }
+            finally
+            {
+                conn.Close();
+            }
         }
     }
 }
