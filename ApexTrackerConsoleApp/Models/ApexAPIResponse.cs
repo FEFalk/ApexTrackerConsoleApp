@@ -11,7 +11,7 @@ namespace ApexTrackerConsoleApp.Models
         /// <summary>
         /// The data returned from the operation.
         /// </summary>
-        [JsonProperty("data")]
+        [JsonProperty("userInfo")]
         public T data { get; set; }
     }
 }

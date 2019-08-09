@@ -31,7 +31,7 @@ namespace ApexTrackerConsoleApp
             {
                 player.UpdateStatsFromAPI();
                 // IMPORTANT! Wait 3 seconds between each request against apex.tracker.gg, or else we will get banned.
-                Thread.Sleep(3000);
+                Thread.Sleep(1000);
             }
         }
         public void BuildPlayerList(GameSessionDto gameSession)
@@ -73,8 +73,11 @@ namespace ApexTrackerConsoleApp
             }
             foreach (Player player in playerList)
             {
-                if(player.Active)
+                if (player.Active)
+                {
                     player.SetStatsFromAPI();
+                    Thread.Sleep(1000);
+                }
             }
         }
         public void BuildSquadList(GameSessionDto gameSession)

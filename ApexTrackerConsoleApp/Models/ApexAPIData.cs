@@ -11,14 +11,14 @@ namespace ApexTrackerConsoleApp.Models
         /// <summary>
         /// The data returned from the operation.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonProperty("uid")]
         public string Id { get; set; }
 
         /// <summary>
         /// The data returned from the operation.
         /// </summary>
-        [JsonProperty("type")]
-        public string Type { get; set; }
+        [JsonProperty("rankScore")]
+        public int RankScore { get; set; }
 
         /// <summary>
         /// The data returned from the operation.
