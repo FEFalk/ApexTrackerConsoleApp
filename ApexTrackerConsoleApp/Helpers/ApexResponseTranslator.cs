@@ -22,8 +22,10 @@ namespace ApexTrackerConsoleApp.Helpers
             ApexResponseDict.Add(new KeyValuePair<string, string>("898565421", "Bloodhound"));
             ApexResponseDict.Add(new KeyValuePair<string, string>("843405508", "Octane"));
             ApexResponseDict.Add(new KeyValuePair<string, string>("187386164", "Wattson"));
+            ApexResponseDict.Add(new KeyValuePair<string, string>("80232848", "Crypto"));
 
-            
+
+
             // _Legend Stats_
             //Caustic
             ApexResponseDict.Add(new KeyValuePair<string, string>("15753331", "Kills"));
@@ -74,8 +76,11 @@ namespace ApexTrackerConsoleApp.Helpers
             ApexResponseDict.Add(new KeyValuePair<string, string>("1449585426", "Kills"));
             ApexResponseDict.Add(new KeyValuePair<string, string>("1013733932", "Top3"));
             ApexResponseDict.Add(new KeyValuePair<string, string>("706925895", "Wins"));
-            
-            
+
+            //Crypto
+            ApexResponseDict.Add(new KeyValuePair<string, string>("1154431005", "Kills"));
+            ApexResponseDict.Add(new KeyValuePair<string, string>("767362001", "Top3"));
+            ApexResponseDict.Add(new KeyValuePair<string, string>("276577930", "Wins"));
 
 
 

@@ -46,6 +46,9 @@ namespace ApexTrackerConsoleApp.Controllers
                     {
                         var contents = await res.Content.ReadAsStringAsync();
 
+                        var removedLines = contents.Split(Environment.NewLine.ToCharArray()).Skip(1).ToArray();
+                        contents = string.Join(Environment.NewLine, removedLines);
+
                         contents = contents.Insert(0, "{");
                         contents = contents.Insert(contents.Length, "}");
 
